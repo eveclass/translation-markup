@@ -95,6 +95,51 @@ async function splitFiles(filenames: string[], outDir: string) {
   await Promise.all(files);
 }
 
+/**
+ * Convert a TM file content (as string) to YAML format (also as string).
+ * @param translateMarkup A .tm file content.
+ * @returns A .yaml file content.
+ */
+export function tmToYaml(translateMarkup: string): string {
+  const lines = translateMarkup.split('\n');
+
+  // Add a colon to every line that are not empty or non-strict local maxima, indentation-wise.
+  const yamlLines = lines.map((line, index, lines) => {
+    if (line === '') return line;
+
+    // Handle edge cases: First and last line.
+    if (index === 0) return line + ':';
+    if (index === lines.length - 1) return line;
+
+    // Handle the general case: Append colon if line is not a non-strict local maxima indent-wise.
+    const prevLine = lines[index - 1];
+    const nextLine = lines[index + 1];
+
+    const getLineIndent = line => {
+      const indentMatch = line.match(/^(\s+)/);
+
+      if (!indentMatch) {
+        return 0;
+      }
+      return indentMatch[1].length;
+    };
+    const [prevLineIndent, lineIndent, nextLineIndent] = [
+      prevLine,
+      line,
+      nextLine,
+    ].map(line => getLineIndent(line));
+
+    if (lineIndent >= prevLineIndent && lineIndent >= nextLineIndent) {
+      // Is local maxima.
+      return line;
+    } else {
+      return line + ':';
+    }
+  });
+
+  return yamlLines.join('\n');
+}
+
 export default async function translateCompile(
   globPath: string,
   outDir?: string,

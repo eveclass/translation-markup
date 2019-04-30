@@ -1,13 +1,13 @@
-LANGUAGES
+LANGUAGES:
   1: en-US
   2: pt-BR
 
-SYSTEM
-  ABOUT
+SYSTEM:
+  ABOUT:
     1: About
     2: Sobre
-  COPY
+  COPY:
     1: Copy
     2: Copiar
-  DASHBOARD
+  DASHBOARD:
     1,2: Dashboard
