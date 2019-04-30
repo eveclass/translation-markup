@@ -1,7 +1,7 @@
 {
-  "name": "node-typescript-boilerplate",
+  "name": "translate-markup",
   "version": "0.0.0",
-  "description": "Minimalistic boilerplate to quick-start Node.js development in TypeScript.",
+  "description": "",
   "engines": {
     "node": ">= 10.13 <11"
   },
@@ -26,7 +26,7 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch"
   },
-  "author": "Jakub Synowiec <github@jakubsynowiec.info>",
+  "author": "Thiago da Silva <thiagodasilva@shiftcode.com.br>",
   "license": "Apache-2.0",
   "dependencies": {
     "@types/flat": "0.0.28",

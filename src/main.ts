@@ -32,6 +32,8 @@
 //   return await delayedHello(name, Delays.Long);
 // }
 import * as fs from 'fs';
+const fsPromises = fs.promises;
+
 import * as util from 'util';
 import * as globFunc from 'glob';
 import * as yaml from 'js-yaml';
@@ -53,21 +55,34 @@ interface IOptions {
 function splitFile(filename: string) {
   try {
     const doc = yaml.safeLoad(fs.readFileSync(filename, 'utf-8'));
+    const outputFiles = [];
     for (const index in doc.LANGUAGES) {
       const language = doc.LANGUAGES[index];
       const { LANGUAGES, ...newDoc } = doc;
       const flattenedNewDoc = flatten(newDoc);
-      const filteredFlattenedNewDoc = _.pickBy(
-        flattenedNewDoc,
-        (value, key) => {
+      const filteredFlattenedNewDoc = _.mapKeys(
+        _.pickBy(flattenedNewDoc, (value, key) => {
           const keys = key.split('.');
           return keys[keys.length - 1] == index;
+        }),
+        (value, key) => {
+          const props = key.split('.');
+          return props.slice(0, props.length - 1).join('.');
         },
       );
-      console.log(flatten.unflatten(filteredFlattenedNewDoc));
-      // TODO: Escrever YAML filtrado para um arquivo.
+      const filteredNewDoc = flatten.unflatten(filteredFlattenedNewDoc);
+      const filteredJson = JSON.stringify(filteredNewDoc, null, 2);
+      outputFiles.push(
+        fsPromises.writeFile(`${language}.json`, filteredJson, 'utf8'),
+      );
     }
-    return doc;
+    Promise.all(outputFiles)
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        if (err) throw err;
+      });
   } catch (err) {
     throw err;
   }
