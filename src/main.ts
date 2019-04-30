@@ -35,12 +35,12 @@ import * as fs from 'fs';
 const fsPromises = fs.promises;
 
 import * as util from 'util';
-import * as globFunc from 'glob';
+import * as glob from 'glob';
 import * as yaml from 'js-yaml';
 import * as flatten from 'flat';
 import * as _ from 'lodash';
 
-const glob = util.promisify(globFunc);
+const globPromises = util.promisify(glob);
 
 enum FormatOptions {
   JSON = 'JSON',
@@ -52,7 +52,7 @@ interface IOptions {
   splitFiles: boolean;
 }
 
-function splitFile(filename: string) {
+async function splitFile(filename: string, outDir: string) {
   try {
     const doc = yaml.safeLoad(fs.readFileSync(filename, 'utf-8'));
     const outputFiles = [];
@@ -61,11 +61,11 @@ function splitFile(filename: string) {
       const { LANGUAGES, ...newDoc } = doc;
       const flattenedNewDoc = flatten(newDoc);
       const filteredFlattenedNewDoc = _.mapKeys(
-        _.pickBy(flattenedNewDoc, (value, key) => {
+        _.pickBy(flattenedNewDoc, (_value, key) => {
           const keys = key.split('.');
           return keys[keys.length - 1] == index;
         }),
-        (value, key) => {
+        (_value, key) => {
           const props = key.split('.');
           return props.slice(0, props.length - 1).join('.');
         },
@@ -73,28 +73,26 @@ function splitFile(filename: string) {
       const filteredNewDoc = flatten.unflatten(filteredFlattenedNewDoc);
       const filteredJson = JSON.stringify(filteredNewDoc, null, 2);
       outputFiles.push(
-        fsPromises.writeFile(`${language}.json`, filteredJson, 'utf8'),
+        fsPromises.writeFile(
+          `${outDir}/${language}.json`,
+          filteredJson,
+          'utf8',
+        ),
       );
     }
-    Promise.all(outputFiles)
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => {
-        if (err) throw err;
-      });
+    await Promise.all(outputFiles);
   } catch (err) {
     throw err;
   }
 }
 
-function splitFiles(filenames: string[]) {
+async function splitFiles(filenames: string[], outDir: string) {
   const files = [];
   filenames.forEach(filename => {
-    files.push(splitFile(filename));
+    files.push(splitFile(filename, outDir));
   });
 
-  return [];
+  await Promise.all(files);
 }
 
 export default async function translateCompile(
@@ -104,16 +102,17 @@ export default async function translateCompile(
 ) {
   try {
     // Get list of input .tm filenames.
-    const filenames = await glob(globPath);
-    console.log(filenames);
-
-    // Split files. (later: or not)
-    let splittedFiles = [];
-    if (options.splitFiles) {
-      splittedFiles = splitFiles(filenames);
+    const filenames = await globPromises(globPath);
+    if (!outDir) {
+      outDir = '.';
+    } else if (outDir.substr(-1) == '/' && outDir.length > 1) {
+      outDir = outDir.slice(0, outDir.length - 1);
     }
 
-    // Convert each file of the list to JSON. (later: or JS)
+    // Split files. (later: or not)
+    if (options.splitFiles) {
+      await splitFiles(filenames, outDir);
+    }
   } catch (err) {
     throw err;
   }
