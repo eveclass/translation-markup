@@ -68,4 +68,30 @@ describe('main function', () => {
       done();
     });
   });
+
+  it('generates a single file equal to the expected file', done => {
+    try {
+      fs.unlinkSync(`./__tests__/output/translations.json`);
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error;
+    }
+
+    translateCompile('**/hello.tl', './__tests__/output', {
+      splitFiles: false,
+    }).then(() => {
+      const file = fs.readFileSync(
+        './__tests__/output/translations.json',
+        'utf8',
+      );
+      const expected = fs.readFileSync(
+        './__tests__/output/translations.expected.json',
+        'utf8',
+      );
+
+      // Check if the two JSON files are equivalent.
+      expect(JSON.parse(file)).toEqual(JSON.parse(expected));
+
+      done();
+    });
+  });
 });

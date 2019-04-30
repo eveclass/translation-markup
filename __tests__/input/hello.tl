@@ -1,0 +1,8 @@
+LANGUAGES
+  1:english
+  2:deutsch
+
+HELLO
+  WORLD
+    1:Hello World
+    2:Hallo Welt

@@ -22,9 +22,9 @@ enum FormatOptions {
  */
 interface IOptions {
   /** The format of the output files. Either 'JS' (for JavaScript) or 'JSON'. */
-  format: FormatOptions;
+  format?: FormatOptions;
   /** Whether to split different languages across multiple files. */
-  splitFiles: boolean;
+  splitFiles?: boolean;
 }
 
 /**
@@ -46,12 +46,18 @@ export function tmToYaml(translateMarkup: string): string {
   return yamlLines.join('\n');
 }
 
-async function splitFile(filename: string, outDir: string) {
+async function compileFile(
+  filename: string,
+  outDir: string,
+  splitFiles: boolean,
+) {
   try {
     const translateMarkup = fs.readFileSync(filename, 'utf-8');
     const yamlDoc = tmToYaml(translateMarkup);
     const yamlObject = yaml.safeLoad(yamlDoc);
+
     const outputFiles = [];
+    let outputObject = {};
     for (const index in yamlObject.LANGUAGES) {
       const language = yamlObject.LANGUAGES[index];
       const { LANGUAGES, ...object } = yamlObject;
@@ -87,27 +93,42 @@ async function splitFile(filename: string, outDir: string) {
       );
       const filteredObject = flatten.unflatten(filteredFlattenedObject);
 
-      // Check if file already exists: if yes, merge the two together.
-      let previousObject = {};
-      try {
-        previousObject = JSON.parse(
-          await fsPromises.readFile(`${outDir}/${language}.json`, 'utf8'),
-        );
-      } catch (error) {
-        if (error.code !== 'ENOENT') throw error;
-      }
-      const mergedObject = _.merge(previousObject, filteredObject);
+      if (splitFiles) {
+        // Check if file already exists: if yes, merge the two together.
+        let previousObject = {};
+        try {
+          previousObject = JSON.parse(
+            await fsPromises.readFile(`${outDir}/${language}.json`, 'utf8'),
+          );
+        } catch (error) {
+          if (error.code !== 'ENOENT') throw error;
+        }
+        const mergedObject = _.merge(previousObject, filteredObject);
 
-      const translationsJson = JSON.stringify(mergedObject, null, 2);
-      outputFiles.push(
-        fsPromises.writeFile(
-          `${outDir}/${language}.json`,
-          translationsJson,
-          'utf8',
-        ),
+        const translationsJson = JSON.stringify(mergedObject, null, 2);
+        outputFiles.push(
+          fsPromises.writeFile(
+            `${outDir}/${language}.json`,
+            translationsJson,
+            'utf8',
+          ),
+        );
+      } else {
+        const languageObject = {};
+        languageObject[language] = filteredObject;
+        outputObject = _.merge(outputObject, languageObject);
+      }
+    }
+    if (splitFiles) {
+      await Promise.all(outputFiles);
+    } else {
+      const translationsJson = JSON.stringify(outputObject, null, 2);
+      await fsPromises.writeFile(
+        `${outDir}/translations.json`,
+        translationsJson,
+        'utf8',
       );
     }
-    await Promise.all(outputFiles);
   } catch (err) {
     throw err;
   }
@@ -122,7 +143,7 @@ async function splitFile(filename: string, outDir: string) {
 export default async function translateCompile(
   globPath: string = '**/*.tl',
   outDir: string = '.',
-  _options: IOptions = { format: FormatOptions.JSON, splitFiles: true },
+  options: IOptions = { format: FormatOptions.JSON, splitFiles: true },
 ) {
   try {
     // Get list of input .tl filenames.
@@ -134,7 +155,7 @@ export default async function translateCompile(
     }
 
     for (const filename of filenames) {
-      await splitFile(filename, outDir);
+      await compileFile(filename, outDir, options.splitFiles);
     }
   } catch (err) {
     throw err;
