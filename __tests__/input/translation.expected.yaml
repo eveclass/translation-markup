@@ -10,4 +10,5 @@ SYSTEM:
     1: Copy
     2: Copiar
   DASHBOARD:
-    1,2: Dashboard
+    1: Dashboard
+    2: Dashboard

@@ -30,7 +30,8 @@
 // });
 
 import * as fs from 'fs';
-// import translateCompile from '../src/main';
+
+import translateCompile from '../src/main';
 import { tmToYaml } from '../src/main';
 
 describe('translate-markup to YAML function', () => {
@@ -53,33 +54,35 @@ describe('translate-markup to YAML function', () => {
   });
 });
 
-// test('generated files are equal to expected files', done => {
-//   try {
-//     fs.unlinkSync('./__tests__/output/en-US.json');
-//   } catch (error) {
-//     if (error.code !== 'ENOENT') throw error;
-//   }
-//   try {
-//     fs.unlinkSync('./__tests__/output/pt-BR.json');
-//   } catch (error) {
-//     if (error.code !== 'ENOENT') throw error;
-//   }
+describe('main function', () => {
+  it('generates files equal to the expected files', done => {
+    try {
+      fs.unlinkSync('./__tests__/output/en-US.json');
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error;
+    }
+    try {
+      fs.unlinkSync('./__tests__/output/pt-BR.json');
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error;
+    }
 
-//   translateCompile('**/*.tm', './__tests__/output').then(() => {
-//     const fileEnUs = fs.readFileSync('./__tests__/output/en-US.json', 'utf8');
-//     const filePtBr = fs.readFileSync('./__tests__/output/pt-BR.json', 'utf8');
-//     const expectedEnUs = fs.readFileSync(
-//       './__tests__/output/en-US.expected.json',
-//       'utf8',
-//     );
-//     const expectedPtBr = fs.readFileSync(
-//       './__tests__/output/pt-BR.expected.json',
-//       'utf8',
-//     );
+    translateCompile('**/*.tm', './__tests__/output').then(() => {
+      const fileEnUs = fs.readFileSync('./__tests__/output/en-US.json', 'utf8');
+      const filePtBr = fs.readFileSync('./__tests__/output/pt-BR.json', 'utf8');
+      const expectedEnUs = fs.readFileSync(
+        './__tests__/output/en-US.expected.json',
+        'utf8',
+      );
+      const expectedPtBr = fs.readFileSync(
+        './__tests__/output/pt-BR.expected.json',
+        'utf8',
+      );
 
-//     expect(fileEnUs).toBe(expectedEnUs);
-//     expect(filePtBr).toBe(expectedPtBr);
+      expect(fileEnUs).toBe(expectedEnUs);
+      expect(filePtBr).toBe(expectedPtBr);
 
-//     done();
-//   });
-// });
+      done();
+    });
+  });
+});

@@ -54,14 +54,16 @@ interface IOptions {
 
 async function splitFile(filename: string, outDir: string) {
   try {
-    const doc = yaml.safeLoad(fs.readFileSync(filename, 'utf-8'));
+    const translateMarkup = fs.readFileSync(filename, 'utf-8');
+    const yamlDoc = tmToYaml(translateMarkup);
+    const yamlObject = yaml.safeLoad(yamlDoc);
     const outputFiles = [];
-    for (const index in doc.LANGUAGES) {
-      const language = doc.LANGUAGES[index];
-      const { LANGUAGES, ...newDoc } = doc;
-      const flattenedNewDoc = flatten(newDoc);
-      const filteredFlattenedNewDoc = _.mapKeys(
-        _.pickBy(flattenedNewDoc, (_value, key) => {
+    for (const index in yamlObject.LANGUAGES) {
+      const language = yamlObject.LANGUAGES[index];
+      const { LANGUAGES, ...object } = yamlObject;
+      const flattenedObject = flatten(object);
+      const filteredFlattenedObject = _.mapKeys(
+        _.pickBy(flattenedObject, (_value, key) => {
           const keys = key.split('.');
           return keys[keys.length - 1] == index;
         }),
@@ -70,8 +72,8 @@ async function splitFile(filename: string, outDir: string) {
           return props.slice(0, props.length - 1).join('.');
         },
       );
-      const filteredNewDoc = flatten.unflatten(filteredFlattenedNewDoc);
-      const filteredJson = JSON.stringify(filteredNewDoc, null, 2);
+      const filteredObject = flatten.unflatten(filteredFlattenedObject);
+      const filteredJson = JSON.stringify(filteredObject, null, 2);
       outputFiles.push(
         fsPromises.writeFile(
           `${outDir}/${language}.json`,
