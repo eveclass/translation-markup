@@ -1,36 +1,3 @@
-/**
- * Some predefined delays (in milliseconds).
- */
-// export enum Delays {
-//   Short = 500,
-//   Medium = 2000,
-//   Long = 5000,
-// }
-
-// /**
-//  * Returns a Promise<string> that resolves after given time.
-//  *
-//  * @param {string} name - A name.
-//  * @param {number=} [delay=Delays.Medium] - Number of milliseconds to delay resolution of the Promise.
-//  * @returns {Promise<string>}
-//  */
-// function delayedHello(
-//   name: string,
-//   delay: number = Delays.Medium,
-// ): Promise<string> {
-//   return new Promise((resolve: (value?: string) => void) =>
-//     setTimeout(() => resolve(`Hello, ${name}`), delay),
-//   );
-// }
-
-// // Below are examples of using TSLint errors suppression
-// // Here it is suppressing missing type definitions for greeter function
-
-// // tslint:disable-next-line typedef
-// export async function greeter(name) {
-//   // tslint:disable-next-line no-unsafe-any no-return-await
-//   return await delayedHello(name, Delays.Long);
-// }
 import * as fs from 'fs';
 const fsPromises = fs.promises;
 
@@ -62,8 +29,27 @@ async function splitFile(filename: string, outDir: string) {
       const language = yamlObject.LANGUAGES[index];
       const { LANGUAGES, ...object } = yamlObject;
       const flattenedObject = flatten(object);
+
+      // Separate comma keys: specific to our syntax.
+      const separatedFlattenedObject = {};
+      for (const key in flattenedObject) {
+        const commaMatch = key.match(/\d+(,\d+)+/g);
+        if (!commaMatch) {
+          separatedFlattenedObject[key] = flattenedObject[key];
+          continue;
+        }
+
+        const indices = commaMatch[0].split(',');
+        indices.forEach(index => {
+          const props = key.split('.');
+          props[props.length - 1] = index;
+          const newKey = props.join('.');
+          separatedFlattenedObject[newKey] = flattenedObject[key];
+        });
+      }
+
       const filteredFlattenedObject = _.mapKeys(
-        _.pickBy(flattenedObject, (_value, key) => {
+        _.pickBy(separatedFlattenedObject, (_value, key) => {
           const keys = key.split('.');
           return keys[keys.length - 1] == index;
         }),
@@ -105,38 +91,18 @@ async function splitFiles(filenames: string[], outDir: string) {
 export function tmToYaml(translateMarkup: string): string {
   const lines = translateMarkup.split('\n');
 
-  // Add a colon to every line that are not empty or non-strict local maxima, indentation-wise.
-  const yamlLines = lines.map((line, index, lines) => {
-    if (line === '') return line;
-
-    // Handle edge cases: First and last line.
-    if (index === 0) return line + ':';
-    if (index === lines.length - 1) return line;
-
-    // Handle the general case: Append colon if line is not a non-strict local maxima indent-wise.
-    const prevLine = lines[index - 1];
-    const nextLine = lines[index + 1];
-
-    const getLineIndent = line => {
-      const indentMatch = line.match(/^(\s+)/);
-
-      if (!indentMatch) {
-        return 0;
-      }
-      return indentMatch[1].length;
-    };
-    const [prevLineIndent, lineIndent, nextLineIndent] = [
-      prevLine,
-      line,
-      nextLine,
-    ].map(line => getLineIndent(line));
-
-    if (lineIndent >= prevLineIndent && lineIndent >= nextLineIndent) {
-      // Is local maxima.
+  // Add a colon to every line that is not empty and doesn't have a colon.
+  // Add spaces after colon if there isn't one.
+  const yamlLines = lines.map(line => {
+    if (line === '' || line.includes(': ')) {
       return line;
-    } else {
-      return line + ':';
     }
+
+    if (line.includes(':')) {
+      return line.replace(':', ': ');
+    }
+
+    return line + ':';
   });
 
   return yamlLines.join('\n');

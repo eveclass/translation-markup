@@ -1,14 +1,19 @@
 LANGUAGES:
-  1: en-US
-  2: pt-BR
+  1: enUS
+  2: ptBR
+  3: esES
 
-SYSTEM:
-  ABOUT:
-    1: About
-    2: Sobre
-  COPY:
-    1: Copy
-    2: Copiar
-  DASHBOARD:
-    1: Dashboard
-    2: Dashboard
+CREDIT_CARD:
+  NAME:
+    1: Credit Card
+    2: Cartão de Crédito
+    3: Tarjeta de Crédito
+  FLAG:
+    VISA:
+      1,2,3: Visa
+    MASTERCARD:
+      1,2,3: Mastercard
+    AMEX:
+      1,2,3: American Express
+    DINERS:
+      1,2,3: Diners

@@ -56,31 +56,34 @@ describe('translate-markup to YAML function', () => {
 
 describe('main function', () => {
   it('generates files equal to the expected files', done => {
-    try {
-      fs.unlinkSync('./__tests__/output/en-US.json');
-    } catch (error) {
-      if (error.code !== 'ENOENT') throw error;
-    }
-    try {
-      fs.unlinkSync('./__tests__/output/pt-BR.json');
-    } catch (error) {
-      if (error.code !== 'ENOENT') throw error;
+    for (const filename of ['enUS', 'esES', 'ptBR']) {
+      try {
+        fs.unlinkSync(`./__tests__/output/${filename}.json`);
+      } catch (error) {
+        if (error.code !== 'ENOENT') throw error;
+      }
     }
 
     translateCompile('**/*.tm', './__tests__/output').then(() => {
-      const fileEnUs = fs.readFileSync('./__tests__/output/en-US.json', 'utf8');
-      const filePtBr = fs.readFileSync('./__tests__/output/pt-BR.json', 'utf8');
+      const fileEnUs = fs.readFileSync('./__tests__/output/enUS.json', 'utf8');
+      const filePtBr = fs.readFileSync('./__tests__/output/ptBR.json', 'utf8');
+      const fileEsEs = fs.readFileSync('./__tests__/output/esES.json', 'utf8');
       const expectedEnUs = fs.readFileSync(
-        './__tests__/output/en-US.expected.json',
+        './__tests__/output/enUS.expected.json',
         'utf8',
       );
       const expectedPtBr = fs.readFileSync(
-        './__tests__/output/pt-BR.expected.json',
+        './__tests__/output/ptBR.expected.json',
+        'utf8',
+      );
+      const expectedEsEs = fs.readFileSync(
+        './__tests__/output/esES.expected.json',
         'utf8',
       );
 
       expect(fileEnUs).toBe(expectedEnUs);
       expect(filePtBr).toBe(expectedPtBr);
+      expect(fileEsEs).toBe(expectedEsEs);
 
       done();
     });
