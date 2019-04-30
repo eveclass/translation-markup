@@ -1,13 +1,8 @@
 LANGUAGES:
-  1: en-US
-  2: pt-BR
+  1: english
+  2: deutsch
 
-SYSTEM:
-  ABOUT:
-    1: About
-    2: Sobre
-  COPY:
-    1: Copy
-    2: Copiar
-  DASHBOARD:
-    1,2: Dashboard
+HELLO:
+  WORLD:
+    1: Hello World
+    2: Hallo Welt

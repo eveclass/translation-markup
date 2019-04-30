@@ -19,6 +19,31 @@ interface IOptions {
   splitFiles: boolean;
 }
 
+/**
+ * Convert a TM file content (as string) to YAML format (also as string).
+ * @param translateMarkup A .tl file content.
+ * @returns A .yaml file content.
+ */
+export function tmToYaml(translateMarkup: string): string {
+  const lines = translateMarkup.split('\n');
+
+  // Add a colon to every line that is not empty and doesn't have a colon.
+  // Add spaces after colon if there isn't one.
+  const yamlLines = lines.map(line => {
+    if (line === '' || line.includes(': ')) {
+      return line;
+    }
+
+    if (line.includes(':')) {
+      return line.replace(':', ': ');
+    }
+
+    return line + ':';
+  });
+
+  return yamlLines.join('\n');
+}
+
 async function splitFile(filename: string, outDir: string) {
   try {
     const translateMarkup = fs.readFileSync(filename, 'utf-8');
@@ -74,61 +99,32 @@ async function splitFile(filename: string, outDir: string) {
   }
 }
 
-async function splitFiles(filenames: string[], outDir: string) {
-  const files = [];
-  filenames.forEach(filename => {
-    files.push(splitFile(filename, outDir));
-  });
-
-  await Promise.all(files);
-}
-
 /**
- * Convert a TM file content (as string) to YAML format (also as string).
- * @param translateMarkup A .tm file content.
- * @returns A .yaml file content.
+ * Compile translate-markup files to JSON or JavaScript files.
+ * @param globPath A glob path of the .tl files to compile.
+ * @param outDir Directory to output the compiled JSON/JS files.
+ * @param options The compiler options.
  */
-export function tmToYaml(translateMarkup: string): string {
-  const lines = translateMarkup.split('\n');
-
-  // Add a colon to every line that is not empty and doesn't have a colon.
-  // Add spaces after colon if there isn't one.
-  const yamlLines = lines.map(line => {
-    if (line === '' || line.includes(': ')) {
-      return line;
-    }
-
-    if (line.includes(':')) {
-      return line.replace(':', ': ');
-    }
-
-    return line + ':';
-  });
-
-  return yamlLines.join('\n');
-}
-
 export default async function translateCompile(
-  globPath: string,
-  outDir?: string,
-  options: IOptions = { format: FormatOptions.JSON, splitFiles: true },
+  globPath: string = '**/*.tl',
+  outDir: string = '.',
+  _options: IOptions = { format: FormatOptions.JSON, splitFiles: true },
 ) {
   try {
-    // Get list of input .tm filenames.
+    // Get list of input .tl filenames.
     const filenames = await globPromises(globPath);
 
-    // Default outDir is current directory.
-    // If there is an outDir, remove trailing slash.
-    if (!outDir) {
-      outDir = '.';
-    } else if (outDir.substr(-1) == '/' && outDir.length > 1) {
+    // If there is a trailing slash in outDir, remove it.
+    if (outDir.substr(-1) == '/' && outDir.length > 1) {
       outDir = outDir.slice(0, outDir.length - 1);
     }
 
-    // Split files. (later: or not)
-    if (options.splitFiles) {
-      await splitFiles(filenames, outDir);
-    }
+    const files = [];
+    filenames.forEach(filename => {
+      files.push(splitFile(filename, outDir));
+    });
+
+    await Promise.all(files);
   } catch (err) {
     throw err;
   }
