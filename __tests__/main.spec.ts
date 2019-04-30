@@ -35,28 +35,36 @@ import translateCompile from '../src/main';
 import { tmToYaml } from '../src/main';
 
 describe('translate-markup to YAML function', () => {
-  it('converts from .tm to .yaml correctly', () => {
-    try {
-      fs.unlinkSync('./__tests__/input/translation.yaml');
-    } catch (error) {
-      if (error.code !== 'ENOENT') throw error;
+  it('converts multiple files from .tm to .yaml correctly', () => {
+    for (let i = 0; i < 2; i++) {
+      try {
+        fs.unlinkSync(`./__tests__/input/translation${i}.yaml`);
+      } catch (error) {
+        if (error.code !== 'ENOENT') throw error;
+      }
     }
 
-    const fileTm = fs.readFileSync('./__tests__/input/translation.tm', 'utf8');
+    for (let i = 0; i < 2; i++) {
+      const fileTm = fs.readFileSync(
+        `./__tests__/input/translation${i}.tm`,
+        'utf8',
+      );
+      const fileYaml = tmToYaml(fileTm);
+      const expectedYaml = fs.readFileSync(
+        `./__tests__/input/translation${i}.expected.yaml`,
+        'utf8',
+      );
 
-    const fileYaml = tmToYaml(fileTm);
-    const expectedYaml = fs.readFileSync(
-      './__tests__/input/translation.expected.yaml',
-      'utf8',
-    );
-
-    expect(fileYaml).toBe(expectedYaml);
+      expect(fileYaml).toBe(expectedYaml);
+    }
   });
 });
 
 describe('main function', () => {
   it('generates files equal to the expected files', done => {
-    for (const filename of ['enUS', 'esES', 'ptBR']) {
+    const filenames = ['enUS', 'esES', 'ptBR', 'en-US', 'pt-BR'];
+
+    for (const filename of filenames) {
       try {
         fs.unlinkSync(`./__tests__/output/${filename}.json`);
       } catch (error) {
@@ -65,25 +73,18 @@ describe('main function', () => {
     }
 
     translateCompile('**/*.tm', './__tests__/output').then(() => {
-      const fileEnUs = fs.readFileSync('./__tests__/output/enUS.json', 'utf8');
-      const filePtBr = fs.readFileSync('./__tests__/output/ptBR.json', 'utf8');
-      const fileEsEs = fs.readFileSync('./__tests__/output/esES.json', 'utf8');
-      const expectedEnUs = fs.readFileSync(
-        './__tests__/output/enUS.expected.json',
-        'utf8',
-      );
-      const expectedPtBr = fs.readFileSync(
-        './__tests__/output/ptBR.expected.json',
-        'utf8',
-      );
-      const expectedEsEs = fs.readFileSync(
-        './__tests__/output/esES.expected.json',
-        'utf8',
-      );
+      for (const filename of filenames) {
+        const file = fs.readFileSync(
+          `./__tests__/output/${filename}.json`,
+          'utf8',
+        );
+        const expected = fs.readFileSync(
+          `./__tests__/output/${filename}.expected.json`,
+          'utf8',
+        );
 
-      expect(fileEnUs).toBe(expectedEnUs);
-      expect(filePtBr).toBe(expectedPtBr);
-      expect(fileEsEs).toBe(expectedEsEs);
+        expect(file).toBe(expected);
+      }
 
       done();
     });
