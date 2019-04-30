@@ -30,14 +30,8 @@ export function tmToYaml(translateMarkup: string): string {
   // Add a colon to every line that is not empty and doesn't have a colon.
   // Add spaces after colon if there isn't one.
   const yamlLines = lines.map(line => {
-    if (line === '' || line.includes(': ')) {
-      return line;
-    }
-
-    if (line.includes(':')) {
-      return line.replace(':', ': ');
-    }
-
+    if (line === '' || line.includes(': ')) return line;
+    if (line.includes(':')) return line.replace(':', ': ');
     return line + ':';
   });
 
@@ -84,11 +78,23 @@ async function splitFile(filename: string, outDir: string) {
         },
       );
       const filteredObject = flatten.unflatten(filteredFlattenedObject);
-      const filteredJson = JSON.stringify(filteredObject, null, 2);
+
+      // Check if file already exists: if yes, merge the two together.
+      let previousObject = {};
+      try {
+        previousObject = JSON.parse(
+          await fsPromises.readFile(`${outDir}/${language}.json`, 'utf8'),
+        );
+      } catch (error) {
+        if (error.code !== 'ENOENT') throw error;
+      }
+      const mergedObject = _.merge(previousObject, filteredObject);
+
+      const translationsJson = JSON.stringify(mergedObject, null, 2);
       outputFiles.push(
         fsPromises.writeFile(
           `${outDir}/${language}.json`,
-          filteredJson,
+          translationsJson,
           'utf8',
         ),
       );
@@ -119,12 +125,9 @@ export default async function translateCompile(
       outDir = outDir.slice(0, outDir.length - 1);
     }
 
-    const files = [];
-    filenames.forEach(filename => {
-      files.push(splitFile(filename, outDir));
-    });
-
-    await Promise.all(files);
+    for (const filename of filenames) {
+      await splitFile(filename, outDir);
+    }
   } catch (err) {
     throw err;
   }

@@ -1,0 +1,43 @@
+{
+  "COUNTRY": {
+    "USA": {
+      "NAME": "Estados Unidos",
+      "LANGUAGE": "Inglés",
+      "STATES": {
+        "NEW_YORK": {
+          "NAME": "Nueva York",
+          "ACRONYM": "NY"
+        },
+        "CALIFORNIA": {
+          "NAME": "California",
+          "ACRONYM": "CA"
+        },
+        "NORTH_CAROLINA": {
+          "NAME": "Carolina del Norte",
+          "ACRONYM": "NC"
+        }
+      }
+    },
+    "SPAIN": {
+      "NAME": "España",
+      "LANGUAGE": "Español"
+    },
+    "BRAZIL": {
+      "NAME": "Brasil",
+      "LANGUAGE": "Portugués"
+    }
+  },
+  "MENU": {
+    "CART": {
+      "EMPTY": "Vaciar Carrito",
+      "CHECKOUT": "Realizar Pedido"
+    },
+    "USER": {
+      "LABEL": "Usuario",
+      "DROPDOWN": {
+        "EDIT": "Editar",
+        "LOGOUT": "Finalizar la Sesión"
+      }
+    }
+  }
+}

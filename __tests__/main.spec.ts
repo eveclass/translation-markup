@@ -31,7 +31,16 @@ describe('translate-markup to YAML function', () => {
 
 describe('main function', () => {
   it('generates files equal to the expected files', done => {
-    const filenames = ['enUS', 'esES', 'ptBR', 'english', 'deutsch'];
+    const filenames = [
+      'enUS',
+      'enUs',
+      'esES',
+      'esEs',
+      'ptBR',
+      'ptBr',
+      'english',
+      'deutsch',
+    ];
 
     for (const filename of filenames) {
       try {
@@ -52,7 +61,8 @@ describe('main function', () => {
           'utf8',
         );
 
-        expect(file).toBe(expected);
+        // Check if the two JSON files are equivalent.
+        expect(JSON.parse(file)).toEqual(JSON.parse(expected));
       }
 
       done();
