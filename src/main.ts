@@ -9,13 +9,21 @@ import * as _ from 'lodash';
 
 const globPromises = util.promisify(glob);
 
+/**
+ * The compiled output formats.
+ */
 enum FormatOptions {
   JSON = 'JSON',
   JS = 'JS',
 }
 
+/**
+ * Interface representing the compiler options.
+ */
 interface IOptions {
+  /** The format of the output files. Either 'JS' (for JavaScript) or 'JSON'. */
   format: FormatOptions;
+  /** Whether to split different languages across multiple files. */
   splitFiles: boolean;
 }
 
@@ -108,7 +116,7 @@ async function splitFile(filename: string, outDir: string) {
 /**
  * Compile translate-markup files to JSON or JavaScript files.
  * @param globPath A glob path of the .tl files to compile.
- * @param outDir Directory to output the compiled JSON/JS files.
+ * @param outDir Directory to output the compiled files.
  * @param options The compiler options.
  */
 export default async function translateCompile(
