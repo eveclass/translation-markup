@@ -103,6 +103,9 @@ export default async function translateCompile(
   try {
     // Get list of input .tm filenames.
     const filenames = await globPromises(globPath);
+
+    // Default outDir is current directory.
+    // If there is an outDir, remove trailing slash.
     if (!outDir) {
       outDir = '.';
     } else if (outDir.substr(-1) == '/' && outDir.length > 1) {

@@ -33,6 +33,17 @@ import * as fs from 'fs';
 import translateCompile from '../src/main';
 
 test('generated files are equal to expected files', done => {
+  try {
+    fs.unlinkSync('./__tests__/output/en-US.json');
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+  }
+  try {
+    fs.unlinkSync('./__tests__/output/pt-BR.json');
+  } catch (error) {
+    if (error.code !== 'ENOENT') throw error;
+  }
+
   translateCompile('**/*.tm', './__tests__/output').then(() => {
     const fileEnUs = fs.readFileSync('./__tests__/output/en-US.json', 'utf8');
     const filePtBr = fs.readFileSync('./__tests__/output/pt-BR.json', 'utf8');
