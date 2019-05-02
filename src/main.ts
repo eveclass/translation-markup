@@ -67,6 +67,7 @@ async function compileFile(
     const yamlDoc = tmToYaml(translateMarkup);
     const yamlObject = yaml.safeLoad(yamlDoc);
 
+    const outputPromises = [];
     const outputFiles = [];
     let outputObject = {};
     for (const index in yamlObject.LANGUAGES) {
@@ -117,30 +118,14 @@ async function compileFile(
         const mergedObject = _.merge(previousObject, filteredObject);
 
         const translationsJson = JSON.stringify(mergedObject, null, 2);
-        // if (format === FormatOptions.JS) {
-        //   const translationsJs = 'module.exports = ' + translationsJson;
-        //   const prettyTranslations = prettier.format(translationsJs, {
-        //     singleQuote: true,
-        //     trailingComma: 'all',
-        //     parser: 'babylon',
-        //   });
-
-        //   outputFiles.push(
-        //     fsPromises.writeFile(
-        //       `${outDir}/${language}.js`,
-        //       prettyTranslations,
-        //       'utf8',
-        //     ),
-        //   );
-        // } else {
-        outputFiles.push(
+        outputPromises.push(
           fsPromises.writeFile(
             `${outDir}/${language}.json`,
             translationsJson,
             'utf8',
           ),
         );
-        // }
+        outputFiles.push(`${outDir}/${language}.json`);
       } else {
         const languageObject = {};
         languageObject[language] = filteredObject;
@@ -148,7 +133,7 @@ async function compileFile(
       }
     }
     if (splitFiles) {
-      await Promise.all(outputFiles);
+      await Promise.all(outputPromises);
     } else {
       // Check if file already exists: if yes, merge the two together.
       let previousObject = {};
@@ -167,9 +152,45 @@ async function compileFile(
         translationsJson,
         'utf8',
       );
+      outputFiles.push(`${outDir}/${outputName}.json`);
     }
+
+    return outputFiles;
   } catch (err) {
     throw err;
+  }
+}
+
+async function convertJsonToJs(filename: string) {
+  let jsonString;
+  try {
+    jsonString = await fsPromises.readFile(filename, 'utf8');
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+
+  const jsString = 'module.exports = ' + jsonString;
+  const prettyString = prettier.format(jsString, {
+    parser: 'babylon',
+    singleQuote: true,
+    trailingComma: 'all',
+  });
+  try {
+    await fsPromises.writeFile(
+      filename.replace(/.json$/, '.js'),
+      prettyString,
+      'utf8',
+    );
+  } catch (error) {
+    console.error(error);
+    return;
+  }
+  try {
+    await fsPromises.unlink(filename);
+  } catch (error) {
+    console.error(error);
+    return;
   }
 }
 
@@ -196,13 +217,23 @@ export default async function translateCompile(
       outDir = outDir.slice(0, outDir.length - 1);
     }
 
+    let outputFiles = [];
     for (const filename of filenames) {
-      await compileFile(
-        filename,
-        outDir,
-        options.splitFiles,
-        options.outputName,
+      outputFiles = outputFiles.concat(
+        await compileFile(
+          filename,
+          outDir,
+          options.splitFiles,
+          options.outputName,
+        ),
       );
+    }
+
+    if (options.format === FormatOptions.JS) {
+      const outputSet = new Set(outputFiles);
+      for (const file of outputSet) {
+        await convertJsonToJs(file);
+      }
     }
   } catch (err) {
     throw err;
