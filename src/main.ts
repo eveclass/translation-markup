@@ -25,6 +25,9 @@ interface IOptions {
   format?: FormatOptions;
   /** Whether to split different languages across multiple files. */
   splitFiles?: boolean;
+  /** Name of the output file, without the file extension.
+   * If splitFiles is true, this option is silently ignored. */
+  outputName?: string;
 }
 
 /**
@@ -51,13 +54,13 @@ export function tmToYaml(translateMarkup: string): string {
  * @param filename Name of the .tl file
  * @param outDir The output directory for the compiled files
  * @param splitFiles Whether to split the compiled files across languages
- * @param format The output format, JavaScript or JSON
+ * @param outputName The output filename, if the output is a single file
  */
 async function compileFile(
   filename: string,
   outDir: string,
   splitFiles: boolean,
-  format: FormatOptions,
+  outputName: string,
 ) {
   try {
     const translateMarkup = fs.readFileSync(filename, 'utf-8');
@@ -114,30 +117,30 @@ async function compileFile(
         const mergedObject = _.merge(previousObject, filteredObject);
 
         const translationsJson = JSON.stringify(mergedObject, null, 2);
-        if (format === FormatOptions.JS) {
-          const translationsJs = 'module.exports = ' + translationsJson;
-          const prettyTranslations = prettier.format(translationsJs, {
-            singleQuote: true,
-            trailingComma: 'all',
-            parser: 'babylon',
-          });
+        // if (format === FormatOptions.JS) {
+        //   const translationsJs = 'module.exports = ' + translationsJson;
+        //   const prettyTranslations = prettier.format(translationsJs, {
+        //     singleQuote: true,
+        //     trailingComma: 'all',
+        //     parser: 'babylon',
+        //   });
 
-          outputFiles.push(
-            fsPromises.writeFile(
-              `${outDir}/${language}.js`,
-              prettyTranslations,
-              'utf8',
-            ),
-          );
-        } else {
-          outputFiles.push(
-            fsPromises.writeFile(
-              `${outDir}/${language}.json`,
-              translationsJson,
-              'utf8',
-            ),
-          );
-        }
+        //   outputFiles.push(
+        //     fsPromises.writeFile(
+        //       `${outDir}/${language}.js`,
+        //       prettyTranslations,
+        //       'utf8',
+        //     ),
+        //   );
+        // } else {
+        outputFiles.push(
+          fsPromises.writeFile(
+            `${outDir}/${language}.json`,
+            translationsJson,
+            'utf8',
+          ),
+        );
+        // }
       } else {
         const languageObject = {};
         languageObject[language] = filteredObject;
@@ -147,26 +150,23 @@ async function compileFile(
     if (splitFiles) {
       await Promise.all(outputFiles);
     } else {
-      const translationsJson = JSON.stringify(outputObject, null, 2);
-      if (format === FormatOptions.JS) {
-        const translationsJs = 'module.exports = ' + translationsJson;
-        const prettyTranslations = prettier.format(translationsJs, {
-          singleQuote: true,
-          trailingComma: 'all',
-          parser: 'babylon',
-        });
-        await fsPromises.writeFile(
-          `${outDir}/translations.js`,
-          prettyTranslations,
-          'utf8',
+      // Check if file already exists: if yes, merge the two together.
+      let previousObject = {};
+      try {
+        previousObject = JSON.parse(
+          await fsPromises.readFile(`${outDir}/${outputName}.json`, 'utf8'),
         );
-      } else {
-        await fsPromises.writeFile(
-          `${outDir}/translations.json`,
-          translationsJson,
-          'utf8',
-        );
+      } catch (err) {
+        if (err.code !== 'ENOENT') throw err;
       }
+      const mergedObject = _.merge(previousObject, outputObject);
+
+      const translationsJson = JSON.stringify(mergedObject, null, 2);
+      await fsPromises.writeFile(
+        `${outDir}/${outputName}.json`,
+        translationsJson,
+        'utf8',
+      );
     }
   } catch (err) {
     throw err;
@@ -182,8 +182,12 @@ async function compileFile(
 export default async function translateCompile(
   globPath: string = '**/*.tl',
   outDir: string = '.',
-  options: IOptions = { format: FormatOptions.JSON, splitFiles: true },
+  options: IOptions = {},
 ) {
+  if (options.format === undefined) options.format = FormatOptions.JSON;
+  if (options.splitFiles === undefined) options.splitFiles = true;
+  if (options.outputName === undefined) options.outputName = 'translations';
+
   try {
     const filenames = await globPromises(globPath);
 
@@ -193,7 +197,12 @@ export default async function translateCompile(
     }
 
     for (const filename of filenames) {
-      await compileFile(filename, outDir, options.splitFiles, options.format);
+      await compileFile(
+        filename,
+        outDir,
+        options.splitFiles,
+        options.outputName,
+      );
     }
   } catch (err) {
     throw err;
