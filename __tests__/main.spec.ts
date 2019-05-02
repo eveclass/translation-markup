@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 
 import translateCompile from '../src/main';
-import { tmToYaml } from '../src/main';
+import { FormatOptions, tmToYaml } from '../src/main';
 
 describe('translate-markup to YAML function', () => {
   it('converts multiple files from .tl to .yaml correctly', () => {
@@ -31,7 +31,7 @@ describe('translate-markup to YAML function', () => {
 });
 
 describe('main function', () => {
-  it('generates files equal to the expected files', done => {
+  it('generates JSON files equal to the expected files', done => {
     const filenames = ['deutsch', 'english', 'enUS', 'esES', 'ptBR'];
 
     for (const filename of filenames) {
@@ -63,7 +63,36 @@ describe('main function', () => {
     });
   });
 
-  it('generates a single file equal to the expected file', done => {
+  it('generates JavaScript files equal to the expected files', done => {
+    const filenames = ['deutsch', 'english', 'enUS', 'esES', 'ptBR'];
+
+    for (const filename of filenames) {
+      try {
+        fs.unlinkSync(`./__tests__/output/${filename}.js`);
+      } catch (error) {
+        if (error.code !== 'ENOENT') throw error;
+      }
+    }
+
+    translateCompile('**/*.tl', './__tests__/output', {
+      format: FormatOptions.JS,
+      splitFiles: true,
+    }).then(() => {
+      for (const filename of filenames) {
+        const output = require(`./output/${filename}.js`);
+        const expected = require(`./output/${filename}.expected.js`);
+
+        // Check if the two JavaScript objects are equivalent.
+        expect(output).toEqual(expected);
+
+        fs.unlinkSync(`./__tests__/output/${filename}.js`);
+      }
+
+      done();
+    });
+  });
+
+  it('generates a single JSON file equal to the expected file', done => {
     try {
       fs.unlinkSync(`./__tests__/output/translations.json`);
     } catch (error) {
@@ -86,6 +115,29 @@ describe('main function', () => {
       expect(JSON.parse(file)).toEqual(JSON.parse(expected));
 
       fs.unlinkSync(`./__tests__/output/translations.json`);
+
+      done();
+    });
+  });
+
+  it('generates a single JavaScript file equal to the expected file', done => {
+    try {
+      fs.unlinkSync(`./__tests__/output/translations.js`);
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error;
+    }
+
+    translateCompile('**/hello.tl', './__tests__/output', {
+      format: FormatOptions.JS,
+      splitFiles: false,
+    }).then(() => {
+      const output = require(`./output/translations.js`);
+      const expected = require(`./output/translations.expected.js`);
+
+      // Check if the two JavaScript objects are equivalent.
+      expect(output).toEqual(expected);
+
+      fs.unlinkSync(`./__tests__/output/translations.js`);
 
       done();
     });

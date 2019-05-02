@@ -1,18 +1,18 @@
 import * as fs from 'fs';
 const fsPromises = fs.promises;
-
 import * as util from 'util';
-import * as glob from 'glob';
-import * as yaml from 'js-yaml';
-import * as flatten from 'flat';
-import * as _ from 'lodash';
 
+import * as _ from 'lodash';
+import * as flatten from 'flat';
+import * as glob from 'glob';
 const globPromises = util.promisify(glob);
+import * as yaml from 'js-yaml';
+import * as prettier from 'prettier';
 
 /**
  * The compiled output formats.
  */
-enum FormatOptions {
+export enum FormatOptions {
   JSON = 'JSON',
   JS = 'JS',
 }
@@ -57,7 +57,7 @@ async function compileFile(
   filename: string,
   outDir: string,
   splitFiles: boolean,
-  _format: FormatOptions,
+  format: FormatOptions,
 ) {
   try {
     const translateMarkup = fs.readFileSync(filename, 'utf-8');
@@ -114,13 +114,30 @@ async function compileFile(
         const mergedObject = _.merge(previousObject, filteredObject);
 
         const translationsJson = JSON.stringify(mergedObject, null, 2);
-        outputFiles.push(
-          fsPromises.writeFile(
-            `${outDir}/${language}.json`,
-            translationsJson,
-            'utf8',
-          ),
-        );
+        if (format === FormatOptions.JS) {
+          const translationsJs = 'module.exports = ' + translationsJson;
+          const prettyTranslations = prettier.format(translationsJs, {
+            singleQuote: true,
+            trailingComma: 'all',
+            parser: 'babylon',
+          });
+
+          outputFiles.push(
+            fsPromises.writeFile(
+              `${outDir}/${language}.js`,
+              prettyTranslations,
+              'utf8',
+            ),
+          );
+        } else {
+          outputFiles.push(
+            fsPromises.writeFile(
+              `${outDir}/${language}.json`,
+              translationsJson,
+              'utf8',
+            ),
+          );
+        }
       } else {
         const languageObject = {};
         languageObject[language] = filteredObject;
@@ -131,11 +148,25 @@ async function compileFile(
       await Promise.all(outputFiles);
     } else {
       const translationsJson = JSON.stringify(outputObject, null, 2);
-      await fsPromises.writeFile(
-        `${outDir}/translations.json`,
-        translationsJson,
-        'utf8',
-      );
+      if (format === FormatOptions.JS) {
+        const translationsJs = 'module.exports = ' + translationsJson;
+        const prettyTranslations = prettier.format(translationsJs, {
+          singleQuote: true,
+          trailingComma: 'all',
+          parser: 'babylon',
+        });
+        await fsPromises.writeFile(
+          `${outDir}/translations.js`,
+          prettyTranslations,
+          'utf8',
+        );
+      } else {
+        await fsPromises.writeFile(
+          `${outDir}/translations.json`,
+          translationsJson,
+          'utf8',
+        );
+      }
     }
   } catch (err) {
     throw err;
