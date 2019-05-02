@@ -46,10 +46,18 @@ export function tmToYaml(translateMarkup: string): string {
   return yamlLines.join('\n');
 }
 
+/**
+ * Compile a .tl file to one or multiple JS/JSON files.
+ * @param filename Name of the .tl file
+ * @param outDir The output directory for the compiled files
+ * @param splitFiles Whether to split the compiled files across languages
+ * @param format The output format, JavaScript or JSON
+ */
 async function compileFile(
   filename: string,
   outDir: string,
   splitFiles: boolean,
+  _format: FormatOptions,
 ) {
   try {
     const translateMarkup = fs.readFileSync(filename, 'utf-8');
@@ -155,7 +163,7 @@ export default async function translateCompile(
     }
 
     for (const filename of filenames) {
-      await compileFile(filename, outDir, options.splitFiles);
+      await compileFile(filename, outDir, options.splitFiles, options.format);
     }
   } catch (err) {
     throw err;

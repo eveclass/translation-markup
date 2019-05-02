@@ -5,22 +5,23 @@ import { tmToYaml } from '../src/main';
 
 describe('translate-markup to YAML function', () => {
   it('converts multiple files from .tl to .yaml correctly', () => {
-    for (let i = 0; i < 2; i++) {
+    const filenames = ['hello', 'creditCard'];
+    for (const filename of filenames) {
       try {
-        fs.unlinkSync(`./__tests__/input/translation${i}.yaml`);
+        fs.unlinkSync(`./__tests__/input/${filename}.yaml`);
       } catch (error) {
         if (error.code !== 'ENOENT') throw error;
       }
     }
 
-    for (let i = 0; i < 2; i++) {
+    for (const filename of filenames) {
       const fileTm = fs.readFileSync(
-        `./__tests__/input/translation${i}.tl`,
+        `./__tests__/input/${filename}.tl`,
         'utf8',
       );
       const fileYaml = tmToYaml(fileTm);
       const expectedYaml = fs.readFileSync(
-        `./__tests__/input/translation${i}.expected.yaml`,
+        `./__tests__/input/${filename}.expected.yaml`,
         'utf8',
       );
 
@@ -31,16 +32,7 @@ describe('translate-markup to YAML function', () => {
 
 describe('main function', () => {
   it('generates files equal to the expected files', done => {
-    const filenames = [
-      'enUS',
-      'enUs',
-      'esES',
-      'esEs',
-      'ptBR',
-      'ptBr',
-      'english',
-      'deutsch',
-    ];
+    const filenames = ['deutsch', 'english', 'enUS', 'esES', 'ptBR'];
 
     for (const filename of filenames) {
       try {
@@ -63,6 +55,8 @@ describe('main function', () => {
 
         // Check if the two JSON files are equivalent.
         expect(JSON.parse(file)).toEqual(JSON.parse(expected));
+
+        fs.unlinkSync(`./__tests__/output/${filename}.json`);
       }
 
       done();
@@ -90,6 +84,8 @@ describe('main function', () => {
 
       // Check if the two JSON files are equivalent.
       expect(JSON.parse(file)).toEqual(JSON.parse(expected));
+
+      fs.unlinkSync(`./__tests__/output/translations.json`);
 
       done();
     });
