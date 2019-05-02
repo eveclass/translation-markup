@@ -108,8 +108,8 @@ async function compileFile(
           previousObject = JSON.parse(
             await fsPromises.readFile(`${outDir}/${language}.json`, 'utf8'),
           );
-        } catch (error) {
-          if (error.code !== 'ENOENT') throw error;
+        } catch (err) {
+          if (err.code !== 'ENOENT') throw err;
         }
         const mergedObject = _.merge(previousObject, filteredObject);
 
@@ -185,7 +185,6 @@ export default async function translateCompile(
   options: IOptions = { format: FormatOptions.JSON, splitFiles: true },
 ) {
   try {
-    // Get list of input .tl filenames.
     const filenames = await globPromises(globPath);
 
     // If there is a trailing slash in outDir, remove it.
