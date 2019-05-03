@@ -25,7 +25,7 @@
     "test": "jest --coverage",
     "test:watch": "jest --watch"
   },
-  "author": "Thiago da Silva <thiagodasilva@shiftcode.com.br>",
+  "author": "Shift Code",
   "license": "Apache-2.0",
   "dependencies": {
     "@types/flat": "0.0.28",
