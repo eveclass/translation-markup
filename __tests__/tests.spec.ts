@@ -1,7 +1,7 @@
 import { FormatOptions } from '../src/enums/FormatOptions';
-import { Compiler } from '../src/Model/Compiler';
-import { Engine } from '../src/Model/Engine';
-import { Translator } from '../src/Model/Translator';
+import { Compiler } from '../src/model/Compiler';
+import { Engine } from '../src/model/Engine';
+import { Translator } from '../src/model/Translator';
 import { FileSystemWrapper } from '../src/wrappers/FileSystemWrapper';
 
 describe('test the translator class', () => {

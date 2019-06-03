@@ -1,7 +1,3 @@
-// import glob from 'glob';
-//const util = require('util');
-
-//import { Compiler } from './Compiler';
 import { FormatOptions } from '../enums/FormatOptions';
 import { ICompileOptions } from '../interfaces/ICompileOptions';
 import { GlobWrapper } from '../wrappers/GlobWrapper';

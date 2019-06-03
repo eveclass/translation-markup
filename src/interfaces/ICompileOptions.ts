@@ -5,7 +5,7 @@ import { FormatOptions } from '@/enums/FormatOptions';
 export interface ICompileOptions {
   /**
    * The format of the output files. Either 'JS' (for JavaScript) or 'JSON'.
-   * */
+   */
   format?: FormatOptions;
   /**
    * Whether to split different languages across multiple files.
