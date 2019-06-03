@@ -1,0 +1,30 @@
+LANGUAGES:
+  1: enUS
+  2: ptBR
+  3: esES
+
+CREDIT_CARD:
+  NAME:
+    1: Credit Card
+    2: Cartão de Crédito
+    3: Tarjeta de Crédito
+  FLAG:
+    VISA:
+      1_2_3: Visa
+    MASTERCARD:
+      1_2_3: Mastercard
+    AMEX:
+      1_2_3: American Express
+    DINERS:
+      1_2_3: Diners
+
+SPAIN:
+  NAME:
+    1: Spain
+    2: Spanien
+    3: España
+
+  LANGUAGE:
+    1: Spanish
+    2: Spanisch
+    3: Español
