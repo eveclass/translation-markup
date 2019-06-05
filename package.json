@@ -4,8 +4,8 @@
   "description": "YAML to js/json translation objects converter",
   "author": "Shift Code",
   "license": "MIT",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "lib/src/index.js",
+  "types": "lib/src/index.d.ts",
   "scripts": {
     "build": "tsc -p tsconfig.release.json",
     "test": "jest"
