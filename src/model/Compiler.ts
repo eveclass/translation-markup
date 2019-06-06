@@ -13,56 +13,6 @@ export class Compiler {
   }
 
   /**
-   * Transform a translations array in a js string
-   * @param fileTranslations Array of translations objects
-   */
-  public getJSTranslationsString({
-    fileTranslations
-  }: {
-    fileTranslations: object[];
-  }): string {
-    const translationResult = {};
-    fileTranslations.forEach((fileTranslation: object) => {
-      const languageKey = Object.keys(fileTranslation)[0];
-      translationResult[languageKey] = {
-        ...fileTranslation[languageKey]
-      };
-    });
-
-    const content = `module.exports = ${JSON.stringify(
-      translationResult,
-      undefined,
-      '\t'
-    )}`;
-
-    return prettier.format(content, {
-      parser: 'babel',
-      singleQuote: false,
-      trailingComma: 'none'
-    });
-  }
-
-  /**
-   * Transform a translations array in a json string
-   * @param fileTranslations Array of translations objects
-   */
-  public getJSONTranslationsString({
-    fileTranslations
-  }: {
-    fileTranslations: object[];
-  }): string {
-    const translationResult = {};
-    fileTranslations.forEach((fileTranslation: object) => {
-      const languageKey = Object.keys(fileTranslation)[0];
-      translationResult[languageKey] = {
-        ...fileTranslation[languageKey]
-      };
-    });
-
-    return `${JSON.stringify(translationResult, undefined, '\t')}`;
-  }
-
-  /**
    * Compile the translations array to a file
    * @param fileTranslations Array of translations objects
    * @param outputDirectory The directory to output the translation files

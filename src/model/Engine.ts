@@ -1,3 +1,4 @@
+import * as prettier from 'prettier';
 import { FormatOptions } from '../enums/FormatOptions';
 import { ICompileOptions } from '../interfaces/ICompileOptions';
 import { GlobWrapper } from '../wrappers/GlobWrapper';
@@ -16,6 +17,56 @@ export class Engine {
     this.compiler = new Compiler();
     this.glob = new GlobWrapper();
     this.translator = new Translator();
+  }
+
+  /**
+   * Transform a translations array in a js string
+   * @param fileTranslations Array of translations objects
+   */
+  public getJSTranslationsString({
+    fileTranslations
+  }: {
+    fileTranslations: object[];
+  }): string {
+    const translationResult = {};
+    fileTranslations.forEach((fileTranslation: object) => {
+      const languageKey = Object.keys(fileTranslation)[0];
+      translationResult[languageKey] = {
+        ...fileTranslation[languageKey]
+      };
+    });
+
+    const content = `module.exports = ${JSON.stringify(
+      translationResult,
+      undefined,
+      '\t'
+    )}`;
+
+    return prettier.format(content, {
+      parser: 'babel',
+      singleQuote: false,
+      trailingComma: 'none'
+    });
+  }
+
+  /**
+   * Transform a translations array in a json string
+   * @param fileTranslations Array of translations objects
+   */
+  public getJSONTranslationsString({
+    fileTranslations
+  }: {
+    fileTranslations: object[];
+  }): string {
+    const translationResult = {};
+    fileTranslations.forEach((fileTranslation: object) => {
+      const languageKey = Object.keys(fileTranslation)[0];
+      translationResult[languageKey] = {
+        ...fileTranslation[languageKey]
+      };
+    });
+
+    return `${JSON.stringify(translationResult, undefined, '\t')}`;
   }
 
   /**
