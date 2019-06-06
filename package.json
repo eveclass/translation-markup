@@ -1,5 +1,5 @@
 {
-  "name": "@marioch/translate",
+  "name": "translate-markup",
   "version": "0.0.0",
   "description": "YAML to js/json translation objects converter",
   "author": "Shift Code",
