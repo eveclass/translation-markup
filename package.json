@@ -6,6 +6,9 @@
   "license": "MIT",
   "main": "lib/src/index.js",
   "types": "lib/src/index.d.ts",
+  "files": [
+    "lib/**/*"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.release.json",
     "test": "jest"

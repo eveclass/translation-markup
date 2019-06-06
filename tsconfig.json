@@ -26,5 +26,6 @@
       "@util/*": ["src/util/*"]
     }
   },
+  "exclude": ["node_modules", "lib"],
   "include": ["src/**/*", "__tests__/**/*"]
 }
