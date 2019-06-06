@@ -219,11 +219,14 @@ module.exports = {
     }
   }
 };
+
 ```
 
 ## API Reference
 
 This lib exposes three classes to assist you in the YAML to JS/JSON translation.
+
+## Classes
 
 ### Engine
 
@@ -236,6 +239,22 @@ Does the full YAML to JS/JSON files compilation.
   - outputDirectory `<string>` Directory to output the translations. **Default**: './translations'
   - options `<ICompileOptions>` Compile options. **Default**: `{ format: FormatOptions.JSON, slitFiles: true, outputName: 'translations'}`
 - **Returns**: `Promise<void>`
+
+#### `engine.getJSTranslationsString(input)`
+
+Receives the translations array of objects and transforms into a JS string.
+
+- input `<object>`
+  - fileTranslations `<object[]>` Array of translations objects.
+- **Returns**: `<string>` Returns a string with the all the traslations and a 'module.exports = ' in the beggining to be used for export.
+
+#### `engine.getJSONTranslationsString(input)`
+
+Receives the translations array of objects and transforms into a JSON string.
+
+- input `<object>`
+  - fileTranslations `<object[]>` Array of translations objects.
+- **Returns**: `<string>` Returns a string with all the traslations in a JSON format.
 
 ### Translator
 
@@ -259,18 +278,33 @@ Receives the translations array of objects and compiles to files.
   - format `<FormatOptions>` Generate translations in JS or JSON.
 - **Returns**: `Promise<void>`
 
-#### `compiler.getJSTranslationsString(input)`
+## Interfaces
 
-Receives the translations array of objects and transforms into a JS string.
+### ICompileOptions
 
-- input `<object>`
-  - fileTranslations `<object[]>` Array of translations objects.
-- **Returns**: `<string>` Returns a string with the all the traslations and a 'module.exports = ' in the beggining to be used for export.
+    interface ICompileOptions {
+      /**
+       * The format of the output files. Either 'JS' (for JavaScript) or 'JSON'.
+       */
+      format?: FormatOptions;
+      /**
+       * Whether to split different languages across multiple files.
+       */
+      splitFiles?: boolean;
+      /**
+       * Name of the output file, without the file extension.
+       * If splitFiles is true, this option is silently ignored.
+       */
+      outputName?: string;
+     }
 
-#### `compiler.getJSONTranslationsString(input)`
+## Enums
 
-Receives the translations array of objects and transforms into a JSON string.
+### FormatOptions
 
-- input `<object>`
-  - fileTranslations `<object[]>` Array of translations objects.
-- **Returns**: `<string>` Returns a string with all the traslations in a JSON format.
+```
+enum FormatOptions {
+  JSON = 'JSON',
+  JS = 'JS'
+}
+```
