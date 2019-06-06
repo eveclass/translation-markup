@@ -32,7 +32,7 @@ export class Engine {
     globPath?: string;
     outputDirectory?: string;
     options?: ICompileOptions;
-  } = {}): Promise<boolean> {
+  } = {}): Promise<void> {
     if (!options.format) {
       options.format = FormatOptions.JSON;
     }
@@ -66,8 +66,6 @@ export class Engine {
         });
       })
     );
-
-    return true;
   }
 
   private cleanOutputDir({

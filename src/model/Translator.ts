@@ -15,22 +15,22 @@ export class Translator {
   /**
    * Generates a translation array from yaml file
    * @method generateYamlFileTranslationsArray
-   * @param  x object containing yaml filePath or yaml fileContent, if you provide both, the fileContent will always take precedent
+   * @param  yamlData object containing yaml filePath or yaml fileContent, if you provide both, the fileContent will always take precedent
    */
   public async generateYamlFileTranslationsArray(
-    x: { filePath: string } | { fileContent: string }
+    yamlData: { filePath: string } | { fileContent: string }
   ): Promise<object[]> {
     let yamlContent: string;
 
-    if ('filePath' in x && !('fileContent' in x)) {
-      const { filePath } = x;
+    if ('filePath' in yamlData && !('fileContent' in yamlData)) {
+      const { filePath } = yamlData;
       yamlContent = await this.fileSystemWrapper.readAsync({
         filePath
       });
     }
 
-    if ('fileContent' in x) {
-      const { fileContent } = x;
+    if ('fileContent' in yamlData) {
+      const { fileContent } = yamlData;
       yamlContent = fileContent;
     }
 
