@@ -16,11 +16,11 @@ export class Compiler {
    * Transform a translations array in a js string
    * @param fileTranslations Array of translations objects
    */
-  public async getJSTranslationsString({
+  public getJSTranslationsString({
     fileTranslations
   }: {
     fileTranslations: object[];
-  }): Promise<string> {
+  }): string {
     const translationResult = {};
     fileTranslations.forEach((fileTranslation: object) => {
       const languageKey = Object.keys(fileTranslation)[0];
