@@ -12,12 +12,27 @@ export class Translator {
     this.fileSystemWrapper = new FileSystemWrapper();
   }
 
-  public async generateYamlFileTranslationsArray({
-    filePath
-  }: {
-    filePath: string;
-  }): Promise<object[]> {
-    const yamlContent = await this.fileSystemWrapper.readAsync({ filePath });
+  /**
+   * Generates a translation array from yaml file
+   * @method generateYamlFileTranslationsArray
+   * @param  x object containing yaml filePath or yaml fileContent, if you provide both, the fileContent will always take precedent
+   */
+  public async generateYamlFileTranslationsArray(
+    x: { filePath: string } | { fileContent: string }
+  ): Promise<object[]> {
+    let yamlContent: string;
+
+    if ('filePath' in x && !('fileContent' in x)) {
+      const { filePath } = x;
+      yamlContent = await this.fileSystemWrapper.readAsync({
+        filePath
+      });
+    }
+
+    if ('fileContent' in x) {
+      const { fileContent } = x;
+      yamlContent = fileContent;
+    }
 
     const languagesResults = this.getLanguageResultArrayFromYamlContent({
       yamlContent

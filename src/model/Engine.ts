@@ -24,7 +24,7 @@ export class Engine {
    * @param outputDirectory Directory to output the translations
    * @param options Compile options
    */
-  public async yamlCompile({
+  public async yamlCompileToFiles({
     globPath = './**/*.yaml',
     outputDirectory = './translations',
     options = {}

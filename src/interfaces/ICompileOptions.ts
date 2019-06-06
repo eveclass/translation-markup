@@ -1,4 +1,4 @@
-import { FormatOptions } from '@/enums/FormatOptions';
+import { FormatOptions } from '../enums/FormatOptions';
 /**
  * Interface representing the compiler options.
  */
