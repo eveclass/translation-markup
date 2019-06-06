@@ -77,6 +77,24 @@ describe('test the compiler class', () => {
   const translator = new Translator();
   const fileSystemWrapper = new FileSystemWrapper();
 
+  test('test the getJSTranslationsString', async () => {
+    const fileTranslations = await translator.generateYamlFileTranslationsArray(
+      {
+        filePath: './__tests__/inputs/test.yaml'
+      }
+    );
+
+    const translationsString = compiler.getJSTranslationsString({
+      fileTranslations
+    });
+
+    const expectedTranslation = await fileSystemWrapper.readAsync({
+      filePath: './__tests__/expected/translations-expected.js'
+    });
+
+    expect(translationsString).toMatch(expectedTranslation);
+  });
+
   describe('test compileTranslations method', () => {
     test('format: JSON, splitFiles: false', async () => {
       const translationArray = await translator.generateYamlFileTranslationsArray(
@@ -244,7 +262,7 @@ describe('test the Engine class', () => {
   const engine = new Engine();
 
   test('test the yamlCompile method', async () => {
-    const res = await engine.yamlCompile();
+    const res = await engine.yamlCompileToFiles();
 
     expect(res).toBe(true);
   });
