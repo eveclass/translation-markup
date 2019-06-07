@@ -23,13 +23,19 @@ export class Engine {
    * Transform a translations array in a js string
    * @param fileTranslations Array of translations objects
    */
-  public getJSTranslationsString({
-    fileTranslations
+  public async getJSTranslation({
+    yamlLangContent
   }: {
-    fileTranslations: object[];
-  }): string {
+    yamlLangContent: string;
+  }): Promise<string> {
+    const translationsArray = await this.translator.generateYamlFileTranslationsArray(
+      {
+        fileContent: yamlLangContent
+      }
+    );
+
     const translationResult = {};
-    fileTranslations.forEach((fileTranslation: object) => {
+    translationsArray.forEach((fileTranslation: object) => {
       const languageKey = Object.keys(fileTranslation)[0];
       translationResult[languageKey] = {
         ...fileTranslation[languageKey]
@@ -53,13 +59,19 @@ export class Engine {
    * Transform a translations array in a json string
    * @param fileTranslations Array of translations objects
    */
-  public getJSONTranslationsString({
-    fileTranslations
+  public async getJSONTranslation({
+    yamlLangContent
   }: {
-    fileTranslations: object[];
-  }): string {
+    yamlLangContent: string;
+  }): Promise<string> {
+    const translationsArray = await this.translator.generateYamlFileTranslationsArray(
+      {
+        fileContent: yamlLangContent
+      }
+    );
+
     const translationResult = {};
-    fileTranslations.forEach((fileTranslation: object) => {
+    translationsArray.forEach((fileTranslation: object) => {
       const languageKey = Object.keys(fileTranslation)[0];
       translationResult[languageKey] = {
         ...fileTranslation[languageKey]
@@ -75,7 +87,7 @@ export class Engine {
    * @param outputDirectory Directory to output the translations
    * @param options Compile options
    */
-  public async yamlCompileToFiles({
+  public async compile({
     globPath = './**/*.lang.yaml',
     outputDirectory = './translations',
     options = {}
