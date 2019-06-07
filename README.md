@@ -2,7 +2,9 @@
 
 This is a JS/TS lib designed to transform YAML translation files into JS or JSON to be used translation libs, faciliting the process of translation.
 
-A YAML translation file begins with the declaration of all supported languages of your application. A custom numeric code (key) must be assigned to each one of the declared languages. Then, you declare each translation, based on the initial languages index.
+A YAML translation file is a `.lang.yaml` that begins with the declaration of all supported languages of your application. A custom numeric code (key) must be assigned to each one of the declared languages. Then, you declare each translation, based on the initial languages index.
+
+**Atention** : We view as good pratice to use the `.lang.yaml` extension instead of the `.yaml`. This way you can separate the language files from other `.yaml` files you might be using in you project. This is not required though, just remember to manually specify the `.yaml` extension in the `globPath` property.
 
 ## Getting Started
 
@@ -10,11 +12,13 @@ A YAML translation file begins with the declaration of all supported languages o
 
 TODO: npm etc etc
 
-## Examples
+## Output Examples
 
 ### Compile to single JS file.
 
-YAML File:
+YAML Lang File:
+
+`translations.lang.yaml`
 
 ```
 LANGUAGES:
@@ -28,6 +32,8 @@ CREDIT_CARD:
 ```
 
 Compiles to:
+
+`translations.js`
 
 ```
 module.exports = {
@@ -46,7 +52,9 @@ module.exports = {
 
 ### Compile to multiple JS files.
 
-YAML File:
+YAML Lang File:
+
+`translations.lang.yaml`
 
 ```
 LANGUAGES:
@@ -61,7 +69,7 @@ CREDIT_CARD:
 
 Compiles to:
 
-enUS.js
+`enUS.js`
 
 ```
 module.exports = {
@@ -71,7 +79,7 @@ module.exports = {
 };
 ```
 
-ptBR.js
+`ptBR.js`
 
 ```
 module.exports = {
@@ -84,7 +92,9 @@ module.exports = {
 
 ### Compile to single JSON file
 
-YAML File:
+YAML Lang File:
+
+`translations.lang.yaml`
 
 ```
 LANGUAGES:
@@ -99,7 +109,7 @@ CREDIT_CARD:
 
 Compiles to:
 
-translations.json
+`translations.json`
 
 ```
 {
@@ -118,7 +128,9 @@ translations.json
 
 ### Compile to multiple JSON file
 
-YAML File:
+YAML Lang File:
+
+`translations.lang.yaml`
 
 ```
 LANGUAGES:
@@ -133,7 +145,7 @@ CREDIT_CARD:
 
 Compiles to
 
-enUS.json
+`enUS.json`
 
 ```
 {
@@ -143,7 +155,7 @@ enUS.json
 }
 ```
 
-ptBR.json
+`ptBR.json`
 
 ```
 {
@@ -157,7 +169,9 @@ ptBR.json
 
 If you have the same translation for more than one language, you can separate their indexes by `_` in the translation key so you don't have to repeat it.
 
-YAML file:
+YAML Lang File:
+
+`translations.lang.yaml`
 
 ```
 LANGUAGES:
@@ -182,6 +196,8 @@ CREDIT_CARD:
 ```
 
 Compiles to (if compiling to single file JS):
+
+`translations.js`
 
 ```
 module.exports = {
@@ -222,89 +238,148 @@ module.exports = {
 
 ```
 
+### Multiple translation YAML files
+
+If you have more than on `.lang.yaml` file in your project, the `compile()` method will translate the last one that it finds.
+
+## Usage
+
+### `translationMarkupCompiler.compile()`
+
+Simple default values usage.
+
+```
+import translationMarkupCompiler from 'translation-markup-compiler';
+
+translationMarkupCompiler.compile();
+```
+
+If you want to use a more specific glob path to find the `.lang.yaml` files.
+
+```
+import translationMarkupCompiler from 'translation-markup-compiler';
+
+translationMarkupCompiler.compile({
+  globPath: './**/translations/*.lang.yaml'
+});
+```
+
+If you want to change the output directory of the translations file.
+
+```
+import translationMarkupCompiler from 'translation-markup-compiler';
+
+translationMarkupCompiler.compile({
+  outputDirectory: './src/translations'
+});
+```
+
+Change the compile options.
+
+```
+import translationMarkupCompiler from 'translation-markup-compiler';
+
+translationMarkupCompiler.compile({
+ options: {
+   format: 'JS',
+   splitFiles: false,
+   outputName: 'internationalization'
+ }
+});
+```
+
+Using every option.
+
+```
+import translationMarkupCompiler from 'translation-markup-compiler';
+
+translationMarkupCompiler.compile({
+  globPath: './**/translations/*.lang.yaml',
+  outputDirectory: './src/translations',
+  options: {
+   format: 'JS',
+   splitFiles: false,
+   outputName: 'internationalization'
+ }
+});
+```
+
+### `translationMarkupCompiler.getJSTranslation()`
+
+```
+import fs from 'fs';
+import translationMarkupCompiler from 'translation-markup-compiler';
+
+fs.readFile('./translations.lang.yaml', (err, content) => {
+
+  translationMarkupCompiler.getJSTranslation({
+    yamlLangContent: content
+  })
+  .then((jsTranslationString) => {
+    console.log(jsTranslationString);
+  });
+
+});
+```
+
+### `translationMarkupCompiler.getJSONTranslation()`
+
+```
+import fs from 'fs';
+import translationMarkupCompiler from 'translation-markup-compiler';
+
+fs.readFile('./translations.lang.yaml', (err, content) => {
+
+  translationMarkupCompiler.getJSONTranslation({
+    yamlLangContent: content
+  })
+  .then((jsonTranslationString) => {
+    console.log(jsonTranslationString);
+  });
+
+});
+```
+
 ## API Reference
 
 This lib exposes three classes to assist you in the YAML to JS/JSON translation.
 
-## Classes
+### compile([{ globPath, outputDirectory, options }])
 
-### Engine
+Does the full YAML to JS/JSON file(s) compilation.
 
-#### `engine.yamlCompileToFiles([options])`
+|      Param      |        Type         |                             Default                              |                                       Details                                       |
+| :-------------: | :-----------------: | :--------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
+|    globPath     |     `<string>`      |                       `'./**/*.lang.yaml'`                       | [Glob](https://www.npmjs.com/package/glob) style path where to find the yaml files. |
+| outputDirectory |     `<string>`      |                        `'./translations'`                        |                        Directory to output the translations.                        |
+|     options     | `<ICompileOptions>` | `{ format: 'JSON', slitFiles: true, outputName: 'translations'}` |                                  Compile options.                                   |
 
-Does the full YAML to JS/JSON files compilation.
+&rarr; Returns: `Promise<void>`
 
-- options `<object>`
-  - globPath `<string>` [Glob](https://www.npmjs.com/package/glob) style path where to find the yaml files. **Default**: './\*_/_.yaml'
-  - outputDirectory `<string>` Directory to output the translations. **Default**: './translations'
-  - options `<ICompileOptions>` Compile options. **Default**: `{ format: FormatOptions.JSON, slitFiles: true, outputName: 'translations'}`
-- **Returns**: `Promise<void>`
+#### ICompileOptions:
 
-#### `engine.getJSTranslationsString(input)`
+|   Param    |    Type     |     Default      |                                                   Details                                                    |
+| :--------: | :---------: | :--------------: | :----------------------------------------------------------------------------------------------------------: |
+|   format   | `<string>`  |     `'JSON'`     |                              Format of the output file, accepts 'JS' or 'JSON'.                              |
+| splitFiles | `<boolean>` |      `true`      |                           Whether to compile translation in one or multiple files.                           |
+| outputName | `<string>`  | `'translations'` | Name of the output file, without the file extension. If splitFiles is true, this option is silently ignored. |
 
-Receives the translations array of objects and transforms into a JS string.
+### getJSTranslation({ yamlLangContent })
 
-- input `<object>`
-  - fileTranslations `<object[]>` Array of translations objects.
-- **Returns**: `<string>` Returns a string with the all the traslations and a 'module.exports = ' in the beggining to be used for export.
+Return the JS style translation string base on the YAML lang file content.
 
-#### `engine.getJSONTranslationsString(input)`
+|      Param      |    Type    |            Details             |
+| :-------------: | :--------: | :----------------------------: |
+| yamlLangContent | `<string>` | YAML lang file content string. |
 
-Receives the translations array of objects and transforms into a JSON string.
+&rarr; Returns: `Promise<string>`
 
-- input `<object>`
-  - fileTranslations `<object[]>` Array of translations objects.
-- **Returns**: `<string>` Returns a string with all the traslations in a JSON format.
+### getJSONTranslation({ yamlLangContent })
 
-### Translator
+Return the JSON style translation string base on the YAML lang file content.
 
-##### `translator.generateYamlFileTranslationsArray(yamlData)`
+|      Param      |    Type    |            Details             |
+| :-------------: | :--------: | :----------------------------: |
+| yamlLangContent | `<string>` | YAML lang file content string. |
 
-Does the actual YAML to JS translation.
-
-- yamlData `<{filePath: string} | {fileContent: string}>` Object containing the yaml filePath or yaml fileContent, if you provide both, the fileContent will always take precedent.
-- **Returns** `Promise<object[]>` Returns a array of JS objects containing the translations obtained from the YAML file or YAML content.
-
-### Compiler
-
-#### `compiler.compileTranslations(options)`
-
-Receives the translations array of objects and compiles to files.
-
-- options `<object>`
-  - fileTranslations `<object[]>` Array of translations objects.
-  - outputDirectory `<string>` Directory to output the translations.
-  - splitFiles `<boolean>` Generate translations into one or multiple files.
-  - format `<FormatOptions>` Generate translations in JS or JSON.
-- **Returns**: `Promise<void>`
-
-## Interfaces
-
-### ICompileOptions
-
-    interface ICompileOptions {
-      /**
-       * The format of the output files. Either 'JS' (for JavaScript) or 'JSON'.
-       */
-      format?: FormatOptions;
-      /**
-       * Whether to split different languages across multiple files.
-       */
-      splitFiles?: boolean;
-      /**
-       * Name of the output file, without the file extension.
-       * If splitFiles is true, this option is silently ignored.
-       */
-      outputName?: string;
-     }
-
-## Enums
-
-### FormatOptions
-
-```
-enum FormatOptions {
-  JSON = 'JSON',
-  JS = 'JS'
-}
-```
+&rarr; Returns: `Promise<string>`
