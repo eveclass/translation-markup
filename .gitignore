@@ -1,2 +1,21 @@
-node_modules
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependencies
+node_modules/
+
+# Coverage
+coverage
+
+# VS Code
+.vscode
+!.vscode/tasks.js
 .history
+
+# JetBrains IDEs
+.idea/
+
+# Misc
+.DS_Store
