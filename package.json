@@ -1,6 +1,6 @@
 {
-  "name": "translate-markup",
-  "version": "0.0.0",
+  "name": "translation-markup-compiler",
+  "version": "1.0.0",
   "description": "YAML to js/json translation objects converter",
   "author": "Shift Code",
   "license": "MIT",

@@ -1,9 +1,8 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-**Table of Contents** _generated with [DocToc](https://github.com/thlorenz/doctoc)_
 
-- [Translate-Compile](#translate-compile)
+- [Translation-Markup-Compiler](#translation-markup-compiler)
   - [Getting Started](#getting-started)
     - [Install](#install)
   - [Output Examples](#output-examples)
@@ -30,7 +29,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# Translate-Compile
+# Translation-Markup-Compiler
 
 This is a JS/TS lib designed to transform YAML translation files into JS or JSON to be used translation libs, faciliting the process of translation.
 
