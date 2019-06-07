@@ -1,3 +1,35 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+
+**Table of Contents** _generated with [DocToc](https://github.com/thlorenz/doctoc)_
+
+- [Translate-Compile](#translate-compile)
+  - [Getting Started](#getting-started)
+    - [Install](#install)
+  - [Output Examples](#output-examples)
+    - [Compile to single JS file.](#compile-to-single-js-file)
+    - [Compile to multiple JS files.](#compile-to-multiple-js-files)
+    - [Compile to single JSON file](#compile-to-single-json-file)
+    - [Compile to multiple JSON file](#compile-to-multiple-json-file)
+    - [Same translation for multiple languages](#same-translation-for-multiple-languages)
+    - [Multiple translation YAML files](#multiple-translation-yaml-files)
+  - [Usage](#usage)
+    - [`translationMarkupCompiler.compile()`](#translationmarkupcompilercompile)
+      - [Default values.](#default-values)
+      - [Using a more specific glob path to find the `.lang.yaml` files.](#using-a-more-specific-glob-path-to-find-the-langyaml-files)
+      - [Changing the output directory of the translations file.](#changing-the-output-directory-of-the-translations-file)
+      - [Changing the compile options.](#changing-the-compile-options)
+      - [Using every option.](#using-every-option)
+    - [`translationMarkupCompiler.getJSTranslation()`](#translationmarkupcompilergetjstranslation)
+    - [`translationMarkupCompiler.getJSONTranslation()`](#translationmarkupcompilergetjsontranslation)
+  - [API Reference](#api-reference)
+    - [compile([{ globPath, outputDirectory, options }])](#compile-globpath-outputdirectory-options-)
+      - [ICompileOptions](#icompileoptions)
+    - [getJSTranslation({ yamlLangContent })](#getjstranslation-yamllangcontent-)
+    - [getJSONTranslation({ yamlLangContent })](#getjsontranslation-yamllangcontent-)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Translate-Compile
 
 This is a JS/TS lib designed to transform YAML translation files into JS or JSON to be used translation libs, faciliting the process of translation.
@@ -246,7 +278,7 @@ If you have more than on `.lang.yaml` file in your project, the `compile()` meth
 
 ### `translationMarkupCompiler.compile()`
 
-Simple default values usage.
+#### Default values.
 
 ```
 import translationMarkupCompiler from 'translation-markup-compiler';
@@ -254,7 +286,7 @@ import translationMarkupCompiler from 'translation-markup-compiler';
 translationMarkupCompiler.compile();
 ```
 
-If you want to use a more specific glob path to find the `.lang.yaml` files.
+#### Using a more specific glob path to find the `.lang.yaml` files.
 
 ```
 import translationMarkupCompiler from 'translation-markup-compiler';
@@ -264,7 +296,7 @@ translationMarkupCompiler.compile({
 });
 ```
 
-If you want to change the output directory of the translations file.
+#### Changing the output directory of the translations file.
 
 ```
 import translationMarkupCompiler from 'translation-markup-compiler';
@@ -274,7 +306,7 @@ translationMarkupCompiler.compile({
 });
 ```
 
-Change the compile options.
+#### Changing the compile options.
 
 ```
 import translationMarkupCompiler from 'translation-markup-compiler';
@@ -288,7 +320,7 @@ translationMarkupCompiler.compile({
 });
 ```
 
-Using every option.
+#### Using every option.
 
 ```
 import translationMarkupCompiler from 'translation-markup-compiler';
@@ -356,7 +388,7 @@ Does the full YAML to JS/JSON file(s) compilation.
 
 &rarr; Returns: `Promise<void>`
 
-#### ICompileOptions:
+#### ICompileOptions
 
 |   Param    |    Type     |     Default      |                                                   Details                                                    |
 | :--------: | :---------: | :--------------: | :----------------------------------------------------------------------------------------------------------: |
