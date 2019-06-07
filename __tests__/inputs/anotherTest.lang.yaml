@@ -1,0 +1,33 @@
+LANGUAGES:
+  1: enUS
+  2: ptBR
+  3: esES
+
+CREDIT_CARD:
+  NAME:
+    1: Credit Card
+    2: Cartão de Crédito
+    3: Tarjeta de Crédito
+  FLAG:
+    VISA:
+      1_2_3: Visa
+    MASTERCARD:
+      1_2_3: Mastercard
+    AMEX:
+      1_2_3: American Express
+    DINERS:
+      1_2_3: Diners
+
+BRAZIL:
+  NAME:
+    1: Brazil
+    2_3: Brasil
+  LANGUAGE:
+    1: Portuguese
+    2: Portugués
+    3: Português
+
+PAN:
+  1: Pan
+  2: Panela
+  3: Cacerola
