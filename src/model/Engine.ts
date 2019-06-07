@@ -76,7 +76,7 @@ export class Engine {
    * @param options Compile options
    */
   public async yamlCompileToFiles({
-    globPath = './**/*.yaml',
+    globPath = './**/*.lang.yaml',
     outputDirectory = './translations',
     options = {}
   }: {
@@ -101,22 +101,20 @@ export class Engine {
 
     const outDir = this.cleanOutputDir({ outputDirectory });
 
-    await Promise.all(
-      filePaths.map(async (path: string) => {
-        const fileTranslations = await this.translator.generateYamlFileTranslationsArray(
-          {
-            filePath: path
-          }
-        );
+    for (const path of filePaths) {
+      const fileTranslations = await this.translator.generateYamlFileTranslationsArray(
+        {
+          filePath: path
+        }
+      );
 
-        return this.compiler.compileTranslations({
-          fileTranslations,
-          outputDirectory: outDir,
-          splitFiles: options.splitFiles,
-          format: options.format
-        });
-      })
-    );
+      await this.compiler.compileTranslations({
+        fileTranslations,
+        outputDirectory: outDir,
+        splitFiles: options.splitFiles,
+        format: options.format
+      });
+    }
   }
 
   private cleanOutputDir({
