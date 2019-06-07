@@ -1,7 +1,6 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
 - [Translation-Markup-Compiler](#translation-markup-compiler)
   - [Getting Started](#getting-started)
     - [Install](#install)
@@ -81,7 +80,7 @@ module.exports = {
 };
 ```
 
-### Compile to multiple JS files.
+### Compile to multiple JS files
 
 YAML Lang File:
 
@@ -277,7 +276,7 @@ If you have more than on `.lang.yaml` file in your project, the `compile()` meth
 
 ### `translationMarkupCompiler.compile()`
 
-#### Default values.
+#### Default values
 
 ```
 import translationMarkupCompiler from 'translation-markup-compiler';
@@ -285,7 +284,7 @@ import translationMarkupCompiler from 'translation-markup-compiler';
 translationMarkupCompiler.compile();
 ```
 
-#### Using a more specific glob path to find the `.lang.yaml` files.
+#### Using a more specific glob path to find the `.lang.yaml` files
 
 ```
 import translationMarkupCompiler from 'translation-markup-compiler';
@@ -295,7 +294,7 @@ translationMarkupCompiler.compile({
 });
 ```
 
-#### Changing the output directory of the translations file.
+#### Changing the output directory of the translations file
 
 ```
 import translationMarkupCompiler from 'translation-markup-compiler';
@@ -305,7 +304,7 @@ translationMarkupCompiler.compile({
 });
 ```
 
-#### Changing the compile options.
+#### Changing the compile options
 
 ```
 import translationMarkupCompiler from 'translation-markup-compiler';
@@ -319,7 +318,7 @@ translationMarkupCompiler.compile({
 });
 ```
 
-#### Using every option.
+#### Using every option
 
 ```
 import translationMarkupCompiler from 'translation-markup-compiler';
