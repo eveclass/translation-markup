@@ -1,6 +1,7 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+
 - [Translation-Markup-Compiler](#translation-markup-compiler)
   - [Getting Started](#getting-started)
     - [Install](#install)
@@ -25,6 +26,8 @@
       - [ICompileOptions](#icompileoptions)
     - [getJSTranslation({ yamlLangContent })](#getjstranslation-yamllangcontent-)
     - [getJSONTranslation({ yamlLangContent })](#getjsontranslation-yamllangcontent-)
+  - [CLI](#cli)
+    - [Usage](#usage-1)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
