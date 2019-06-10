@@ -10,7 +10,7 @@ describe('test the translator class', () => {
   test('test generateYamlFileTranslationsArray method', async () => {
     const translationArray = await translator.generateYamlFileTranslationsArray(
       {
-        filePath: './__tests__/inputs/test.yaml'
+        filePath: './__tests__/inputs/test.lang.yaml'
       }
     );
 
@@ -81,7 +81,7 @@ describe('test the compiler class', () => {
     test('format: JSON, splitFiles: false', async () => {
       const translationArray = await translator.generateYamlFileTranslationsArray(
         {
-          filePath: './__tests__/inputs/test.yaml'
+          filePath: './__tests__/inputs/test.lang.yaml'
         }
       );
 
@@ -89,7 +89,8 @@ describe('test the compiler class', () => {
         fileTranslations: translationArray,
         outputDirectory: './__tests__/results',
         format: FormatOptions.JSON,
-        splitFiles: false
+        splitFiles: false,
+        outputName: 'translations'
       });
 
       const [compiledTranslation, expectedTranslation] = await Promise.all([
@@ -109,7 +110,7 @@ describe('test the compiler class', () => {
     test('format: JSON, splitFiles: true', async () => {
       const translationArray = await translator.generateYamlFileTranslationsArray(
         {
-          filePath: './__tests__/inputs/test.yaml'
+          filePath: './__tests__/inputs/test.lang.yaml'
         }
       );
 
@@ -117,7 +118,8 @@ describe('test the compiler class', () => {
         fileTranslations: translationArray,
         outputDirectory: './__tests__/results',
         format: FormatOptions.JSON,
-        splitFiles: true
+        splitFiles: true,
+        outputName: 'translations'
       });
 
       const expectedTranslations: string[] = await Promise.all([
@@ -160,7 +162,7 @@ describe('test the compiler class', () => {
     test('format: JS, splitFiles: false', async () => {
       const translationArray = await translator.generateYamlFileTranslationsArray(
         {
-          filePath: './__tests__/inputs/test.yaml'
+          filePath: './__tests__/inputs/test.lang.yaml'
         }
       );
 
@@ -168,7 +170,8 @@ describe('test the compiler class', () => {
         fileTranslations: translationArray,
         outputDirectory: './__tests__/results',
         format: FormatOptions.JS,
-        splitFiles: false
+        splitFiles: false,
+        outputName: 'translations'
       });
 
       const [compiledTranslation, expectedTranslation] = await Promise.all([
@@ -198,7 +201,7 @@ describe('test the compiler class', () => {
     test('format: JS, splitFiles: true', async () => {
       const translationArray = await translator.generateYamlFileTranslationsArray(
         {
-          filePath: './__tests__/inputs/test.yaml'
+          filePath: './__tests__/inputs/test.lang.yaml'
         }
       );
 
@@ -206,7 +209,8 @@ describe('test the compiler class', () => {
         fileTranslations: translationArray,
         outputDirectory: './__tests__/results',
         format: FormatOptions.JS,
-        splitFiles: true
+        splitFiles: true,
+        outputName: 'translations'
       });
 
       const expectedTranslations: string[] = await Promise.all([
@@ -242,11 +246,10 @@ describe('test the compiler class', () => {
 
 describe('test the Engine class', () => {
   const engine = new Engine();
-  const translator = new Translator();
   const fileSystemWrapper = new FileSystemWrapper();
 
   test('test the yamlCompile method', async () => {
-    const res = await engine.yamlCompileToFiles({
+    const res = await engine.compile({
       outputDirectory: './__tests__/results'
     });
 
@@ -254,14 +257,12 @@ describe('test the Engine class', () => {
   });
 
   test('test the getJSTranslationsString', async () => {
-    const fileTranslations = await translator.generateYamlFileTranslationsArray(
-      {
-        filePath: './__tests__/inputs/test.yaml'
-      }
-    );
+    const yamlContent = await fileSystemWrapper.readAsync({
+      filePath: './__tests__/inputs/test.lang.yaml'
+    });
 
-    const translationsString = engine.getJSTranslationsString({
-      fileTranslations
+    const translationsString = await engine.getJSTranslation({
+      yamlLangContent: yamlContent
     });
 
     const expectedTranslation = await fileSystemWrapper.readAsync({
@@ -272,14 +273,12 @@ describe('test the Engine class', () => {
   });
 
   test('test the getJSONTranslationsString', async () => {
-    const fileTranslations = await translator.generateYamlFileTranslationsArray(
-      {
-        filePath: './__tests__/inputs/test.yaml'
-      }
-    );
+    const yamlContent = await fileSystemWrapper.readAsync({
+      filePath: './__tests__/inputs/test.lang.yaml'
+    });
 
-    const translationsString = engine.getJSONTranslationsString({
-      fileTranslations
+    const translationsString = await engine.getJSONTranslation({
+      yamlLangContent: yamlContent
     });
     const objectTranslation = JSON.parse(translationsString);
 
