@@ -13,6 +13,9 @@
     "build": "tsc -p tsconfig.release.json",
     "test": "jest"
   },
+  "bin": {
+    "tmc": "./lib/src/cli.js"
+  },
   "engines": {
     "node": ">= 10.13 <11"
   },
@@ -31,9 +34,11 @@
     "typescript": "^3.5.1"
   },
   "dependencies": {
+    "@types/yargs": "^13.0.0",
     "flat": "^4.1.0",
     "glob": "^7.1.4",
     "js-yaml": "^3.13.1",
-    "prettier": "^1.17.1"
+    "prettier": "^1.17.1",
+    "yargs": "^13.2.4"
   }
 }
