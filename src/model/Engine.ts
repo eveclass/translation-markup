@@ -96,13 +96,13 @@ export class Engine {
     outputDirectory?: string;
     options?: ICompileOptions;
   } = {}): Promise<void> {
-    if (!options.format) {
+    if (options.format === undefined) {
       options.format = FormatOptions.JSON;
     }
-    if (!options.splitFiles) {
+    if (options.splitFiles === undefined) {
       options.splitFiles = true;
     }
-    if (!options.outputName) {
+    if (options.outputName === undefined) {
       options.outputName = 'translations';
     }
 
