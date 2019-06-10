@@ -1,7 +1,6 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
 - [Translation-Markup-Compiler](#translation-markup-compiler)
   - [Getting Started](#getting-started)
     - [Install](#install)
@@ -414,3 +413,39 @@ Return the JSON style translation string base on the YAML lang file content.
 | yamlLangContent | `<string>` | YAML lang file content string. |
 
 &rarr; Returns: `Promise<string>`
+
+## CLI
+
+This lib also contains a CLI to generate translations files directly from the terminal.
+
+|            Option             |                                                   Details                                                    |        Default        |
+| :---------------------------: | :----------------------------------------------------------------------------------------------------------: | :-------------------: |
+|          `--version`          |                                                 Show version                                                 |         -----         |
+|      `--gb, --globPath`       |                              Glob style path where to find the yaml lang files                               | `"./\*_/_.lang.yaml"` |
+| `--outDir, --outputDirectory` |                                     Directory to output the translations                                     |  `"./translations"`   |
+|      `--fmrt, --format`       |                                    Compile output format ("JSON" or "JS")                                    |       `"JSON"`        |
+|    `--split, --splitFiles`    |                                 Compile to one file or separate by language                                  |        `true`         |
+|   `--outName, --outputName`   | Name of the output file, without the file extension. If splitFiles is true, this option is silently ignored. |   `"translations"`    |
+|           `--help`            |                                                  Show help                                                   |         -----         |
+
+### Usage
+
+```
+# Compiles with the default values
+tmc
+
+# Compiles with diferent globPath
+tmc --gb './**/translations/*.lang.yaml'
+
+# Compiles with diferent output directory
+tmc --outDir './src/translations'
+
+# Compiles with diferent format
+tmc --format JS
+
+# Compiles into one file
+tmc --spitFiles false
+
+# Compiles with diferent output name
+tmc --splitFiles false --outputName test
+```
