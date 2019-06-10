@@ -124,7 +124,8 @@ export class Engine {
         fileTranslations,
         outputDirectory: outDir,
         splitFiles: options.splitFiles,
-        format: options.format
+        format: options.format,
+        outputName: options.outputName
       });
     }
   }

@@ -23,12 +23,14 @@ export class Compiler {
     fileTranslations,
     outputDirectory,
     splitFiles,
-    format
+    format,
+    outputName
   }: {
     fileTranslations: object[];
     outputDirectory: string;
     splitFiles: boolean;
     format: FormatOptions;
+    outputName: string;
   }): Promise<void> {
     if (splitFiles) {
       await this.compileToMultipleFiles({
@@ -40,7 +42,8 @@ export class Compiler {
       await this.compileToSingleFile({
         fileTranslations,
         outputDirectory,
-        format
+        format,
+        outputName
       });
     }
   }
@@ -86,11 +89,13 @@ export class Compiler {
   private async compileToSingleFile({
     fileTranslations,
     outputDirectory,
-    format
+    format,
+    outputName
   }: {
     fileTranslations: object[];
     outputDirectory: string;
     format: FormatOptions;
+    outputName: string;
   }): Promise<void> {
     const translationResult = {};
     fileTranslations.forEach((fileTranslation: object) => {
@@ -114,7 +119,7 @@ export class Compiler {
     }
 
     await this.fileSystemWrapper.writeFileAsync({
-      filePath: `${outputDirectory}/translations.${fileExtension}`,
+      filePath: `${outputDirectory}/${outputName}.${fileExtension}`,
       content
     });
   }
