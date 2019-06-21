@@ -20,6 +20,7 @@
     "node": ">= 10.13 <11"
   },
   "devDependencies": {
+    "@types/yargs": "^13.0.0",
     "@types/flat": "^0.0.28",
     "@types/glob": "^7.1.1",
     "@types/jest": "^24.0.13",
@@ -34,7 +35,6 @@
     "typescript": "^3.5.1"
   },
   "dependencies": {
-    "@types/yargs": "^13.0.0",
     "flat": "^4.1.0",
     "glob": "^7.1.4",
     "js-yaml": "^3.13.1",

@@ -22,7 +22,7 @@ Stop organizing files by language and start organizing them by feature, module o
 
 ## Getting Started
 
-`translation-markup`, is a compiler that takes one or more yaml files (with the translation markup) and output them as `json` or `js` translation files, with the structure you already use in your projects.
+`translation-markup` is a compiler that takes one or more yaml files (with the translation markup) and output them as `json` or `js` translation files, with the same structure you already use in your projects.
 
 Take this simple example:
 
@@ -61,6 +61,8 @@ CREDIT_CARD:
 };
 ```
 
+Do you want more output examples of what you can be achieved? Take a look at **[more ouput examples](output-examples.md)**.
+
 ## Install
 
 **NPM:**
@@ -86,7 +88,7 @@ If you're looking to use use it with webpack, don't bother installing this lib. 
 Import or require
 
 ```js
-import translationMarkupCompiler from "translation-markup";
+import translationMarkup from "translation-markup";
 ```
 
 ### Simple usage
@@ -94,7 +96,7 @@ import translationMarkupCompiler from "translation-markup";
 Default configs will take `'./**/*.lang.yaml'` [glob pattern](https://github.com/isaacs/node-glob) as input and output them as `json` files to `'./translations'` directory.
 
 ```js
-translationMarkupCompiler.compile();
+translationMarkup.compile();
 ```
 
 ### Custom input
@@ -102,7 +104,7 @@ translationMarkupCompiler.compile();
 You may override the input pattern with the `globPath` option:
 
 ```js
-translationMarkupCompiler.compile({
+translationMarkup.compile({
   globPath: "./**/translations/*.lang.yaml"
 });
 ```
@@ -112,7 +114,7 @@ translationMarkupCompiler.compile({
 You may override the output directory with the `outputDirectory` option:
 
 ```js
-translationMarkupCompiler.compile({
+translationMarkup.compile({
   outputDirectory: "./src/translations"
 });
 ```
@@ -122,21 +124,7 @@ translationMarkupCompiler.compile({
 You may override the output type (JS or JSON) and choose to split files per language or output all translations to a single file.
 
 ```js
-translationMarkupCompiler.compile({
-  options: {
-    format: "JS", // defaults to JSON
-    splitFiles: false, // defaults to true
-    outputName: "internationalization" // defaults to translations (name of translation file, applicable only when splitFiles=false)
-  }
-});
-```
-
-#### Using every option
-
-```js
-translationMarkupCompiler.compile({
-  globPath: "./**/translations/*.lang.yaml",
-  outputDirectory: "./src/translations",
+translationMarkup.compile({
   options: {
     format: "JS",
     splitFiles: false,
@@ -145,38 +133,68 @@ translationMarkupCompiler.compile({
 });
 ```
 
-### `translationMarkupCompiler.getJSTranslation()`
+### Customize everything
 
-```
-import fs from 'fs';
-import translationMarkupCompiler from 'translation-markup';
-
-fs.readFile('./translations.lang.yaml', (err, content) => {
-
-  translationMarkupCompiler.getJSTranslation({
-    yamlLangContent: content
-  })
-  .then((jsTranslationString) => {
-    console.log(jsTranslationString);
-  });
-
+```js
+translationMarkup.compile({
+  globPath: "./**/translations/*.lang.yaml", // defaults to './**/*.lang.yaml'
+  outputDirectory: "./src/translations", // defaults to './translations'
+  options: {
+    format: "JS", // defaults to 'JSON'
+    splitFiles: false, // defaults to true
+    outputName: "internationalization" // defaults to 'translations' (name of the single translation file, applicable only when splitFiles=false)
+  }
 });
 ```
 
-### `translationMarkupCompiler.getJSONTranslation()`
+## API Reference
+
+### -> `compile([{ globPath, outputDirectory, options }])`
+
+Takes a `globPath` as input and output translations files to the `outputDirectory` directory, with given `options` config.
+
+|      Param      |                                Type                                |                              Default                              |                                       Details                                       |
+| :-------------: | :----------------------------------------------------------------: | :---------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
+|    globPath     |                             `<string>`                             |                       `'./**/*.lang.yaml'`                        | [Glob](https://www.npmjs.com/package/glob) style path where to find the yaml files. |
+| outputDirectory |                             `<string>`                             |                        `'./translations'`                         |                        Directory to output the translations.                        |
+|     options     | `{ format: <string>, splitFiles: <boolean>, outputName: <string>}` | `{ format: 'JSON', splitFiles: true, outputName: 'translations'}` |                           Output type and split options.                            |
+
+**&rarr; Returns: `Promise<void>`**
+
+## CLI
+
+The compiler also contains a **CLI** to generate translations files directly from the terminal.
+
+### CLI Usage
 
 ```
-import fs from 'fs';
-import translationMarkupCompiler from 'translation-markup';
+# Compiles with the default values
+tmc
 
-fs.readFile('./translations.lang.yaml', (err, content) => {
+# Compiles with diferent globPath
+tmc --gb './**/translations/*.lang.yaml'
 
-  translationMarkupCompiler.getJSONTranslation({
-    yamlLangContent: content
-  })
-  .then((jsonTranslationString) => {
-    console.log(jsonTranslationString);
-  });
+# Compiles with diferent output directory
+tmc --outDir './src/translations'
 
-});
+# Compiles with diferent format
+tmc --format JS
+
+# Compiles into one file
+tmc --spitFiles false
+
+# Compiles with diferent output name
+tmc --splitFiles false --outputName test
 ```
+
+### CLI Options
+
+|            Option             |                                                   Details                                                    |        Default        |
+| :---------------------------: | :----------------------------------------------------------------------------------------------------------: | :-------------------: |
+|          `--version`          |                                                 Show version                                                 |         -----         |
+|      `--gb, --globPath`       |                              Glob style path where to find the yaml lang files                               | `"./\*_/_.lang.yaml"` |
+| `--outDir, --outputDirectory` |                                     Directory to output the translations                                     |  `"./translations"`   |
+|      `--fmrt, --format`       |                                    Compile output format ("JSON" or "JS")                                    |       `"JSON"`        |
+|    `--split, --splitFiles`    |                                 Compile to one file or separate by language                                  |        `true`         |
+|   `--outName, --outputName`   | Name of the output file, without the file extension. If splitFiles is true, this option is silently ignored. |   `"translations"`    |
+|           `--help`            |                                                  Show help                                                   |         -----         |
