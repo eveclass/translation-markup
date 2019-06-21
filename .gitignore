@@ -8,6 +8,7 @@ node_modules/
 
 # Coverage
 coverage
+.history
 
 # VS Code
 .vscode
