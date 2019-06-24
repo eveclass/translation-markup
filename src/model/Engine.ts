@@ -124,8 +124,6 @@ export class Engine {
       filesTranslations.push(...pathTranslations);
     }
 
-    console.log(filesTranslations);
-
     await this.compiler.compileTranslations({
       filesTranslations,
       outputDirectory: outDir,

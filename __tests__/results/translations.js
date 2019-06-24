@@ -1,8 +1,9 @@
 module.exports = {
   enUS: {
-    SPAIN: {
-      NAME: "Spain",
-      LANGUAGE: "Spanish"
+    PAN: "Pan",
+    BRAZIL: {
+      NAME: "Brazil",
+      LANGUAGE: "Portuguese"
     },
     CREDIT_CARD: {
       NAME: "Credit Card",
@@ -12,12 +13,17 @@ module.exports = {
         DINERS: "Diners",
         MASTERCARD: "Mastercard"
       }
+    },
+    SPAIN: {
+      NAME: "Spain",
+      LANGUAGE: "Spanish"
     }
   },
   ptBR: {
-    SPAIN: {
-      NAME: "Spanien",
-      LANGUAGE: "Spanisch"
+    PAN: "Panela",
+    BRAZIL: {
+      NAME: "Brasil",
+      LANGUAGE: "Portugués"
     },
     CREDIT_CARD: {
       NAME: "Cartão de Crédito",
@@ -27,12 +33,17 @@ module.exports = {
         DINERS: "Diners",
         MASTERCARD: "Mastercard"
       }
+    },
+    SPAIN: {
+      NAME: "Spanien",
+      LANGUAGE: "Spanisch"
     }
   },
   esES: {
-    SPAIN: {
-      NAME: "España",
-      LANGUAGE: "Español"
+    PAN: "Cacerola",
+    BRAZIL: {
+      NAME: "Brasil",
+      LANGUAGE: "Português"
     },
     CREDIT_CARD: {
       NAME: "Tarjeta de Crédito",
@@ -42,6 +53,10 @@ module.exports = {
         DINERS: "Diners",
         MASTERCARD: "Mastercard"
       }
+    },
+    SPAIN: {
+      NAME: "España",
+      LANGUAGE: "Español"
     }
   }
 };

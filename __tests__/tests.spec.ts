@@ -7,7 +7,7 @@ import { FileSystemWrapper } from '../src/wrappers/FileSystemWrapper';
 describe('test the translator class', () => {
   const translator = new Translator();
 
-  test('test generateYamlFileTranslationsArray method', async () => {
+  test('test generateYamlFilesTranslationsArray method', async () => {
     const translationArray = await translator.generateYamlFileTranslationsArray(
       {
         filePath: './__tests__/inputs/test.lang.yaml'
@@ -86,7 +86,7 @@ describe('test the compiler class', () => {
       );
 
       await compiler.compileTranslations({
-        fileTranslations: translationArray,
+        filesTranslations: translationArray,
         outputDirectory: './__tests__/results',
         format: FormatOptions.JSON,
         splitFiles: false,
@@ -115,7 +115,7 @@ describe('test the compiler class', () => {
       );
 
       await compiler.compileTranslations({
-        fileTranslations: translationArray,
+        filesTranslations: translationArray,
         outputDirectory: './__tests__/results',
         format: FormatOptions.JSON,
         splitFiles: true,
@@ -167,7 +167,7 @@ describe('test the compiler class', () => {
       );
 
       await compiler.compileTranslations({
-        fileTranslations: translationArray,
+        filesTranslations: translationArray,
         outputDirectory: './__tests__/results',
         format: FormatOptions.JS,
         splitFiles: false,
@@ -206,7 +206,7 @@ describe('test the compiler class', () => {
       );
 
       await compiler.compileTranslations({
-        fileTranslations: translationArray,
+        filesTranslations: translationArray,
         outputDirectory: './__tests__/results',
         format: FormatOptions.JS,
         splitFiles: true,
@@ -250,6 +250,40 @@ describe('test the Engine class', () => {
 
   test('test the yamlCompile method', async () => {
     const res = await engine.compile({
+      options: {
+        splitFiles: false
+      },
+      outputDirectory: './__tests__/results'
+    });
+
+    expect(res).toBeUndefined();
+  });
+
+  test('test the yamlCompile method', async () => {
+    const res = await engine.compile({
+      outputDirectory: './__tests__/results'
+    });
+
+    expect(res).toBeUndefined();
+  });
+
+  test('test the yamlCompile method', async () => {
+    const res = await engine.compile({
+      options: {
+        splitFiles: false,
+        format: FormatOptions.JS
+      },
+      outputDirectory: './__tests__/results'
+    });
+
+    expect(res).toBeUndefined();
+  });
+
+  test('test the yamlCompile method', async () => {
+    const res = await engine.compile({
+      options: {
+        format: FormatOptions.JS
+      },
       outputDirectory: './__tests__/results'
     });
 

@@ -1,7 +1,8 @@
 {
-	"SPAIN": {
-		"NAME": "Spanien",
-		"LANGUAGE": "Spanisch"
+	"PAN": "Panela",
+	"BRAZIL": {
+		"NAME": "Brasil",
+		"LANGUAGE": "Portugués"
 	},
 	"CREDIT_CARD": {
 		"NAME": "Cartão de Crédito",
@@ -11,5 +12,9 @@
 			"DINERS": "Diners",
 			"MASTERCARD": "Mastercard"
 		}
+	},
+	"SPAIN": {
+		"NAME": "Spanien",
+		"LANGUAGE": "Spanisch"
 	}
 }
