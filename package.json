@@ -1,5 +1,5 @@
 {
-  "name": "translation-markup",
+  "name": "@shiftcode/translation-markup",
   "version": "1.0.0",
   "description": "Write faster and more maintainable translations.",
   "author": "Cainã Santos",
