@@ -63,6 +63,12 @@ CREDIT_CARD:
 
 Do you want more output examples of what you can be achieved? Take a look at **[more ouput examples](output-examples.md)**.
 
+### Languages Key
+
+At the top of each translation file should be defined the `LANGUAGES` key, with all languages mapping. In the example above `1: enUs` maps number `1` as language `enUS` and number `2` as `ptBR`.
+
+Resulting files respect these mappings. In this case, 2 files would be output: `enUs.json` and `ptBr.json`.
+
 ## Install
 
 **NPM:**
@@ -163,7 +169,11 @@ Takes a `globPath` as input and output translations files to the `outputDirector
 
 ## CLI
 
-The compiler also contains a **CLI** to generate translations files directly from the terminal.
+The compiler also contains a **CLI** to generate translations files directly from the terminal. You should install this lib as a global dependency if you intend to use it's CLI:
+
+```sh
+npm install -g translation-markup
+```
 
 ### CLI Usage
 
