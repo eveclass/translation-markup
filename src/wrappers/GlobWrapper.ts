@@ -1,4 +1,4 @@
-import * as glob from 'glob';
+import glob from 'glob';
 
 /**
  * Wrapper class to use glob methods as promises

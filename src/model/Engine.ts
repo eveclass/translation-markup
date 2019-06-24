@@ -113,21 +113,24 @@ export class Engine {
 
     const outDir = this.cleanOutputDir({ outputDirectory });
 
+    const filesTranslations = [];
     for (const path of filePaths) {
-      const fileTranslations = await this.translator.generateYamlFileTranslationsArray(
+      const pathTranslations = await this.translator.generateYamlFileTranslationsArray(
         {
           filePath: path
         }
       );
 
-      await this.compiler.compileTranslations({
-        fileTranslations,
-        outputDirectory: outDir,
-        splitFiles: options.splitFiles,
-        format: options.format,
-        outputName: options.outputName
-      });
+      filesTranslations.push(...pathTranslations);
     }
+
+    await this.compiler.compileTranslations({
+      filesTranslations,
+      outputDirectory: outDir,
+      splitFiles: options.splitFiles,
+      format: options.format,
+      outputName: options.outputName
+    });
   }
 
   private cleanOutputDir({

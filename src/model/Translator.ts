@@ -1,5 +1,5 @@
-import * as flat from 'flat';
-import * as jsYaml from 'js-yaml';
+import flat from 'flat';
+import jsYaml from 'js-yaml';
 import { FileSystemWrapper } from '../wrappers/FileSystemWrapper';
 
 /**

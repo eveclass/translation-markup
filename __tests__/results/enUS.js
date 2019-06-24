@@ -1,7 +1,8 @@
 module.exports = {
-  SPAIN: {
-    NAME: "Spain",
-    LANGUAGE: "Spanish"
+  PAN: "Pan",
+  BRAZIL: {
+    NAME: "Brazil",
+    LANGUAGE: "Portuguese"
   },
   CREDIT_CARD: {
     NAME: "Credit Card",
@@ -11,5 +12,9 @@ module.exports = {
       DINERS: "Diners",
       MASTERCARD: "Mastercard"
     }
+  },
+  SPAIN: {
+    NAME: "Spain",
+    LANGUAGE: "Spanish"
   }
 };

@@ -1,3 +1,5 @@
+//const lodashAssign = require('lodash.assign');
+import lodashAssign from 'lodash.assign';
 import * as prettier from 'prettier';
 import { FormatOptions } from '../enums/FormatOptions';
 import { FileSystemWrapper } from '../wrappers/FileSystemWrapper';
@@ -14,19 +16,19 @@ export class Compiler {
 
   /**
    * Compile the translations array to a file
-   * @param fileTranslations Array of translations objects
+   * @param filesTranslations Array of translations objects
    * @param outputDirectory The directory to output the translation files
    * @param splitFiles Generate translations in one or multiple files
    * @param format Generate translations in JS or JSON
    */
   public async compileTranslations({
-    fileTranslations,
+    filesTranslations,
     outputDirectory,
     splitFiles,
     format,
     outputName
   }: {
-    fileTranslations: object[];
+    filesTranslations: object[];
     outputDirectory: string;
     splitFiles: boolean;
     format: FormatOptions;
@@ -34,13 +36,13 @@ export class Compiler {
   }): Promise<void> {
     if (splitFiles) {
       await this.compileToMultipleFiles({
-        fileTranslations,
+        filesTranslations,
         outputDirectory,
         format
       });
     } else {
       await this.compileToSingleFile({
-        fileTranslations,
+        filesTranslations,
         outputDirectory,
         format,
         outputName
@@ -49,60 +51,82 @@ export class Compiler {
   }
 
   private async compileToMultipleFiles({
-    fileTranslations,
+    filesTranslations,
     outputDirectory,
     format
   }: {
-    fileTranslations: object[];
+    filesTranslations: object[];
     outputDirectory: string;
     format: FormatOptions;
   }): Promise<void> {
-    await Promise.all(
-      fileTranslations.map((fileTranslation: object) => {
-        const languageKey = Object.keys(fileTranslation)[0];
+    const translationResult = {};
+    filesTranslations.forEach((fileTranslation: object) => {
+      const languageKey = Object.keys(fileTranslation)[0];
 
-        let fileExtension = 'json';
-        let content = `${JSON.stringify(
-          fileTranslation[languageKey],
-          undefined,
-          '\t'
-        )}`;
+      if (!translationResult[languageKey]) {
+        translationResult[languageKey] = {};
+      }
 
-        if (format === FormatOptions.JS) {
-          fileExtension = 'js';
-          content = `module.exports = ${content}`;
-          content = prettier.format(content, {
-            parser: 'babel',
-            singleQuote: false,
-            trailingComma: 'none'
-          });
-        }
+      lodashAssign(
+        translationResult[languageKey],
+        fileTranslation[languageKey]
+      );
+    });
 
-        return this.fileSystemWrapper.writeFileAsync({
+    const writeFilesPromises = [];
+
+    Object.keys(translationResult).forEach((languageKey: string) => {
+      let fileExtension = 'json';
+      let content = `${JSON.stringify(
+        translationResult[languageKey],
+        undefined,
+        '\t'
+      )}`;
+
+      if (format === FormatOptions.JS) {
+        fileExtension = 'js';
+        content = `module.exports = ${content}`;
+        content = prettier.format(content, {
+          parser: 'babel',
+          singleQuote: false,
+          trailingComma: 'none'
+        });
+      }
+
+      writeFilesPromises.push(
+        this.fileSystemWrapper.writeFileAsync({
           filePath: `${outputDirectory}/${languageKey}.${fileExtension}`,
           content
-        });
-      })
-    );
+        })
+      );
+    });
+
+    await Promise.all(writeFilesPromises);
   }
 
   private async compileToSingleFile({
-    fileTranslations,
+    filesTranslations,
     outputDirectory,
     format,
     outputName
   }: {
-    fileTranslations: object[];
+    filesTranslations: object[];
     outputDirectory: string;
     format: FormatOptions;
     outputName: string;
   }): Promise<void> {
     const translationResult = {};
-    fileTranslations.forEach((fileTranslation: object) => {
+    filesTranslations.forEach((fileTranslation: object) => {
       const languageKey = Object.keys(fileTranslation)[0];
-      translationResult[languageKey] = {
-        ...fileTranslation[languageKey]
-      };
+
+      if (!translationResult[languageKey]) {
+        translationResult[languageKey] = {};
+      }
+
+      lodashAssign(
+        translationResult[languageKey],
+        fileTranslation[languageKey]
+      );
     });
 
     let fileExtension = 'json';
