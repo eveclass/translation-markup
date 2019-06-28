@@ -1,6 +1,6 @@
 {
   "name": "@shiftcode/translation-markup",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Write faster and more maintainable translations.",
   "author": "Cainã Santos",
   "license": "MIT",
@@ -17,7 +17,7 @@
     "tmc": "./lib/src/cli.js"
   },
   "engines": {
-    "node": ">= 10.13 <11"
+    "node": ">= 10.13 <13"
   },
   "devDependencies": {
     "@types/yargs": "^13.0.0",
