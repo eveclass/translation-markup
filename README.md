@@ -74,13 +74,13 @@ Resulting files respect these mappings. In this case, 2 files would be output: `
 **NPM:**
 
 ```sh
-npm install translation-markup
+npm install @shiftcode/translation-markup
 ```
 
 **Yarn:**
 
 ```sh
-yarn add translation-markup
+yarn add @shiftcode/translation-markup
 ```
 
 PS: Install it globally if you intend to use the cli.
@@ -94,7 +94,7 @@ If you're looking to use use it with webpack, don't bother installing this lib. 
 Import or require
 
 ```js
-import translationMarkup from "translation-markup";
+import translationMarkup from "@shiftcode/translation-markup";
 ```
 
 ### Simple usage
@@ -172,7 +172,7 @@ Takes a `globPath` as input and output translations files to the `outputDirector
 The compiler also contains a **CLI** to generate translations files directly from the terminal. You should install this lib as a global dependency if you intend to use it's CLI:
 
 ```sh
-npm install -g translation-markup
+npm install -g @shiftcode/translation-markup
 ```
 
 ### CLI Usage
