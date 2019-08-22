@@ -7,6 +7,7 @@
     "no-relative-imports": false,
     "export-name": false,
     "promise-function-async": false,
+    "no-default-export": false,
     "no-void-expression": false,
     "no-redundant-jsdoc": false,
     "no-any": false,

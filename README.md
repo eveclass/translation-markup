@@ -127,12 +127,12 @@ translationMarkup.compile({
 
 ### Custom output options
 
-You may override the output type (JS or JSON) and choose to split files per language or output all translations to a single file.
+You may override the output type (JS, TS or JSON) and choose to split files per language or output all translations to a single file.
 
 ```js
 translationMarkup.compile({
   options: {
-    format: "JS",
+    format: "JS", // JS (module.exports), JS_EXPORT_DEFAULT (export default), TS or JSON
     splitFiles: false,
     outputName: "internationalization"
   }

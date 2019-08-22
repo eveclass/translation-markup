@@ -241,6 +241,89 @@ describe('test the compiler class', () => {
         expect(translation.trim()).toMatch(expectedTranslations[index].trim());
       });
     });
+
+    test('format: TS, splitFiles: false', async () => {
+      const translationArray = await translator.generateYamlFileTranslationsArray(
+        {
+          filePath: './__tests__/inputs/test.lang.yaml'
+        }
+      );
+
+      await compiler.compileTranslations({
+        filesTranslations: translationArray,
+        outputDirectory: './__tests__/results',
+        format: FormatOptions.TS,
+        splitFiles: false,
+        outputName: 'translations'
+      });
+
+      const [compiledTranslation, expectedTranslation] = await Promise.all([
+        fileSystemWrapper.readAsync({
+          filePath: './__tests__/results/translations.ts'
+        }),
+        fileSystemWrapper.readAsync({
+          filePath: './__tests__/expected/translations-expected.ts'
+        })
+      ]);
+
+      const expectedObjectStringTranslation = expectedTranslation.substring(
+        17,
+        expectedTranslation.length - 2
+      );
+
+      const compiledObjectStringTraslation = compiledTranslation.substring(
+        17,
+        compiledTranslation.length - 2
+      );
+
+      expect(expectedObjectStringTranslation).toEqual(
+        compiledObjectStringTraslation
+      );
+    });
+
+    test('format: TS, splitFiles: true', async () => {
+      const translationArray = await translator.generateYamlFileTranslationsArray(
+        {
+          filePath: './__tests__/inputs/test.lang.yaml'
+        }
+      );
+
+      await compiler.compileTranslations({
+        filesTranslations: translationArray,
+        outputDirectory: './__tests__/results',
+        format: FormatOptions.TS,
+        splitFiles: true,
+        outputName: 'translations'
+      });
+
+      const expectedTranslations: string[] = await Promise.all([
+        fileSystemWrapper.readAsync({
+          filePath: './__tests__/expected/enUS-expected.ts'
+        }),
+        fileSystemWrapper.readAsync({
+          filePath: './__tests__/expected/esES-expected.ts'
+        }),
+        fileSystemWrapper.readAsync({
+          filePath: './__tests__/expected/ptBR-expected.ts'
+        })
+      ]);
+
+      const compiledTranslations: string[] = await Promise.all([
+        fileSystemWrapper.readAsync({
+          filePath: './__tests__/results/enUS.ts'
+        }),
+        fileSystemWrapper.readAsync({
+          filePath: './__tests__/results/esES.ts'
+        }),
+        fileSystemWrapper.readAsync({
+          filePath: './__tests__/results/ptBR.ts'
+        })
+      ]);
+
+      compiledTranslations.forEach((translation: string, index: number) => {
+        expect(translation.trim()).toMatch(expectedTranslations[index].trim());
+      });
+    });
   });
 });
 

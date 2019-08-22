@@ -83,9 +83,16 @@ export class Compiler {
         '\t'
       )}`;
 
-      if (format === FormatOptions.JS) {
-        fileExtension = 'js';
-        content = `module.exports = ${content}`;
+      if (
+        format === FormatOptions.JS ||
+        format === FormatOptions.JS_EXPORT_DEFAULT ||
+        format === FormatOptions.TS
+      ) {
+        fileExtension = format === FormatOptions.TS ? 'ts' : 'js';
+        content =
+          format === FormatOptions.JS
+            ? `module.exports = ${content}`
+            : `export default ${content}`;
         content = prettier.format(content, {
           parser: 'babel',
           singleQuote: false,
@@ -132,9 +139,16 @@ export class Compiler {
     let fileExtension = 'json';
     let content = `${JSON.stringify(translationResult, undefined, '\t')}`;
 
-    if (format === FormatOptions.JS) {
-      fileExtension = 'js';
-      content = `module.exports = ${content}`;
+    if (
+      format === FormatOptions.JS ||
+      format === FormatOptions.JS_EXPORT_DEFAULT ||
+      format === FormatOptions.TS
+    ) {
+      fileExtension = format === FormatOptions.TS ? 'ts' : 'js';
+      content =
+        format === FormatOptions.JS
+          ? `module.exports = ${content}`
+          : `export default ${content}`;
       content = prettier.format(content, {
         parser: 'babel',
         singleQuote: false,
