@@ -1,9 +1,14 @@
 {
   "name": "@shiftcode/translation-markup",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Write faster and more maintainable translations.",
   "author": "Cainã Santos",
   "license": "MIT",
+  "homepage": "https://translationmarkup.com/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shift-code/translation-markup"
+  },
   "main": "lib/src/index.js",
   "types": "lib/src/index.d.ts",
   "files": [
