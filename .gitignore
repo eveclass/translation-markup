@@ -20,6 +20,3 @@ coverage
 
 # Misc
 .DS_Store
-
-# Compiled Lib
-lib
