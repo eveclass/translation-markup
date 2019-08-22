@@ -87,7 +87,7 @@ PS: Install it globally if you intend to use the cli.
 
 ## Usage with Webpack
 
-If you're looking to use use it with webpack, don't bother installing this lib. Take a look at the **[translation-compiler-loader](https://github.com/shift-code/translation-markup-loader)** for webpack.
+If you're looking to use use it with webpack, don't bother installing this lib. Take a look at **[translation-markup-plugin](https://github.com/shift-code/translation-markup-plugin)** and **[translation-compiler-loader](https://github.com/shift-code/translation-markup-loader)** for webpack.
 
 ## Usage with Node
 
