@@ -22,7 +22,7 @@
     "tmc": "./lib/src/cli.js"
   },
   "engines": {
-    "node": ">= 10.13 <13"
+    "node": ">= 10.13 <14"
   },
   "devDependencies": {
     "@types/yargs": "^13.0.0",
